@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Login - Immobilis
+{% endblock %}
+
+{% block content %}
+  <!-- formulário de login -->
+  <div class="container-fluid pt-5">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <h2 class="text-center mb-4">Login</h2>
+        <form id="login-form">
+          <div class="form-group">
+            <label for="email">E-mail:</label>
+            <input type="email" class="form-control" id="email">
+          </div>
+          <div class="form-group">
+            <label for="senha">Senha:</label>
+            <input type="password" class="form-control" id="senha">
+          </div>
+          <div class="form-group" id="error-message" style="display: none;">
+            <small class="text-danger">E-mail ou senha incorretos.</small>
+          </div>
+          <div class="form-group form-check">
+            <input type="checkbox" class="form-check-input" id="lembrar">
+            <label class="form-check-label" for="lembrar">Lembrar-me</label>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">Entrar</button>
+        </form>
+        <hr>
+        <p class="text-center">ou</p>
+        <div class="form-group">
+          <a href="#" class="btn btn-primary btn-block">Entrar com o Google</a>
+        </div>
+        <div class="text-center">
+          <a href="#">Esqueceu a senha?</a>
+        </div>
+      </div> 
+    </div>
+  </div>
+
+  <script>
+// Adicione esta função para obter o CSRF token do cookie
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== "") {
+    const cookies = document.cookie.split(";");
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      if (cookie.substring(0, name.length + 1) === name + "=") {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+}
+
+$("#login-form").submit(function (event) {
+  event.preventDefault();
+  const email = $("#email").val();
+  const senha = $("#senha").val();
+
+  $.ajax({
+    url: "/loginpost/",
+    type: "POST",
+    data: {
+      email: email,
+      senha: senha,
+      csrfmiddlewaretoken: getCookie("csrftoken"),
+    },
+    success: function (response) {
+      // Redirecionar para a página desejada após o login bem-sucedido
+      window.location.href = "/busca/";
+    },
+    error: function (error) {
+      // Mostrar mensagem de erro se o status for 401
+      if (error.status === 401) {
+        $("#error-message").show();
+      } else {
+        console.log("Erro ao realizar login:", error);
+      }
+    },
+  });
+});
+
+  </script>
+{% endblock %}

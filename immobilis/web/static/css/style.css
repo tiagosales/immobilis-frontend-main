@@ -1,0 +1,204 @@
+/* estilo do menu */
+nav.sidebar {
+    position: fixed;
+    top: 56px;
+    left: 0;
+    height: 100%;
+    width: 250px;
+    background-color: #343a40;
+    color: #fff;
+    padding: 10px 0;
+    z-index: 1;
+    overflow-x: hidden;
+    transition: all 0.3s;
+  }
+  
+  nav.sidebar .nav-link {
+    color: #fff;
+  }
+  
+  nav.sidebar .nav-link:hover {
+    color: #aaa;
+  }
+  
+  nav.sidebar .nav-item.active {
+    background-color: #007bff;
+  }
+  
+  nav.sidebar .navbar-brand {
+    font-weight: bold;
+    padding: 15px;
+    color: #fff;
+    font-size: 20px;
+    border-bottom: 1px solid #444;
+    margin-bottom: 20px;
+  }
+  
+  nav.sidebar .btn-collapse {
+    display: none;
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 10px 15px;
+    background-color: #343a40;
+    color: #fff;
+    border: none;
+  }
+  
+  nav.sidebar .btn-back-collapse {
+    display: yes;
+    position: absolute;
+    top: 56px;
+    right: 0;
+    padding: 10px 15px;
+    background-color: #aaa;
+    color: #fff;
+    border: none;
+    font-weight: bold;
+    padding: 15px;
+    color: #fff;
+    font-size: 20px;
+    border-bottom: 1px solid #444;
+    margin-bottom: 20px;
+  }
+  
+  nav.sidebar .btn-collapse:hover {
+    background-color: #aaa;
+    color: #fff;
+  }
+  
+  @media (max-width: 767.98px) {
+    nav.sidebar {
+      position: absolute;
+      top: 56px;
+      left: -250px;
+      width: 100%;
+    }
+    nav.sidebar.show {
+      left: 0;
+    }
+    nav.sidebar .btn-collapse {
+      display: block;
+    }
+  }
+  
+  .container-fluid.sidebar-expanded {
+    padding-left: 250px;
+    transition: all 0.3s;
+  }
+  
+  .sidebar-expanded .navbar {
+    margin-left: 250px;
+    transition: all 0.3s;
+  }
+  
+  .sidebar-expanded .btn-collapse {
+    left: 250px;
+    transition: all 0.3s;
+  }
+  
+  .sidebar-expanded .btn-back-collapse {
+    left: 250px;
+    transition: all 0.3s;
+  }
+  
+  .sidebar-expanded .sidebar {
+    left: 0;
+    top: 56px;
+    transition: all 0.3s;
+  }
+  
+  .sidebar-expanded .container-fluid.pt-5 {
+    padding-left: 15px;
+    padding-right: 15px;
+    transition: all 0.3s;
+  }
+  
+  body {
+    padding-top: 56px;
+    font-size: 16px;
+    line-height: 1.5;
+  }
+  
+  @media (max-width: 767.98px) {
+    .container-fluid.sidebar-expanded {
+      padding-left: 0;
+    }
+    .sidebar-expanded .navbar {
+      margin-left: 0;
+    }
+    .sidebar-expanded .btn-collapse {
+      left: 0;
+    }
+    .sidebar-expanded .btn-back-collapse {
+      left: 0;
+    }
+    .sidebar-expanded .sidebar {
+      left: -250px;
+    }
+    .sidebar-expanded .container-fluid.pt-5 {
+      padding-left: 15px;
+      padding-right: 15px;
+    }
+  }
+  .stars {
+    margin-bottom: 10px;
+  }
+  
+  .heart {
+    margin-top: 10px;
+  }
+
+  .carousel-inner img {
+    width: 100%; /* Define a largura como 100% para ocupar todo o espaço do contêiner do carrossel */
+    height: auto; /* Mantém a proporção original da imagem */
+    max-width: 100%; /* Define a largura máxima como 100% */
+    max-height: 400px; /* Define a altura máxima desejada */
+  }
+
+  .horizontal-menu {
+    display: flex;
+    align-items: center;
+    padding: 0;
+    list-style: none;
+    margin: 0;
+  }
+
+  .horizontal-menu .nav-item {
+    margin-right: 20px;
+  }
+
+  .horizontal-menu .nav-link {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s;
+  }
+
+  .horizontal-menu .nav-link:hover {
+    color: #f8f9fa; /* Cor de destaque ao passar o mouse */
+  }
+
+  /* Estilo para as miniaturas das imagens atuais */
+#imagensAtuais {
+  list-style-type: none; /* Remove os marcadores de lista padrão */
+  padding: 0;
+  display: flex; /* Exibe as imagens em uma linha horizontal */
+}
+
+#imagensAtuais li {
+  margin-right: 10px; /* Espaçamento entre as miniaturas */
+}
+
+#imagensAtuais img {
+  max-width: 100px; /* Largura máxima das miniaturas */
+  height: auto; /* Altura automática para manter a proporção original */
+  border: 2px solid #ccc; /* Adiciona uma borda às miniaturas (opcional) */
+  max-height: 400px; /* Defina a altura máxima desejada */
+  overflow-y: auto; /* Adicione uma barra de rolagem vertical se necessário */
+}
+
+.image-thumbnail img {
+  max-width: 100%; /* Defina o tamanho máximo das miniaturas de imagem */
+  height: auto;
+}

@@ -1,0 +1,452 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Gerenciamento de Imoveis - Imobiliária
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+      <div class="col-md-12">
+          <h1 class="h4">Detalhes do Imovel</h1>
+          <hr>
+      </div>
+  </div>
+  <div class="row">
+    <div class="col-md-8 mb-3">
+        <div id="carouselFotos" class="carousel slide" data-ride="carousel">
+          <ol class="carousel-indicators">
+            <!-- Indicadores do carrossel -->
+            {% for foto in fotos_adicionais %}
+              <li data-target="#carouselFotos" data-slide-to="{{ forloop.counter0 }}" {% if forloop.first %}class="active"{% endif %}></li>
+            {% endfor %}
+          </ol>
+          <div class="carousel-inner">
+            <!-- Slides do carrossel -->
+            {% for foto in fotos_adicionais %}
+              <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                <img src="{{ foto.foto }}" class="d-block w-100" alt="Foto do Imóvel">
+              </div>
+            {% endfor %}
+          </div>
+          <a class="carousel-control-prev" href="#carouselFotos" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Anterior</span>
+          </a>
+          <a class="carousel-control-next" href="#carouselFotos" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Próximo</span>
+          </a>
+        </div>
+    </div>
+      <div class="col-md-4 mb-3">
+          <h1 class="h2 mb-3">Código do Imóvel: <span id="codigoImovel"></span></h1>
+          <p class="lead"><span id="descricaoImovel"></span></p>
+          <p class="lead"><strong>Modalidade: </strong><span id="modalidade"></span></p>
+          <p class="lead"><strong>Preço:</strong> R$ <span id="preco"></span></p>
+          <p class="lead"><strong>Localização:</strong> <span id="localizacaoImovel"></span></p>
+          <p class="lead"><strong>Tipo de Imóvel:</strong> <span id="tipoImovel"></span></p>
+          <p class="lead"><strong>Número de Quartos:</strong> <span id="numQuartos"></span></p>
+          <p class="lead"><strong>Número de Banheiros:</strong> <span id="numBanheiros"></span></p>
+          <p class="lead"><strong>Área:</strong> <span id="area"></span> m²</p>
+          <div class="stars" id="avaliacoes">
+          </div>
+          <div class="heart">
+            <button type="button" class="btn btn-outline-danger" id="favoritoButton"><i class="far fa-heart"></i> Adicionar aos Favoritos</button>
+          </div>
+      </div>
+      
+      <!-- Seção de Mapa -->
+      <div class="col-md-12 mb-3">
+          <h2 class="h3">Localização</h2>
+          <p class="lead">Localização do imóvel no mapa.</p>
+          <iframe id="mapa" src="" width="100%" height="300" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe>
+      </div>
+  </div>
+  
+  <!-- Seção de Avaliações e Comentários -->
+  <div class="row">
+      <div class="col-md-8">
+          <h3 class="h5 mb-3">Avaliações e Comentários</h3>
+          <form action="#" method="POST" onsubmit="enviarAvaliacao(event)">
+              <div class="form-group">
+                  <label for="rating">Avaliação (de 1 a 5 estrelas)</label>
+                  <input type="number" id="rating" name="rating" min="1" max="5" required>
+              </div>
+              <div class="form-group">
+                  <label for="comment">Comentário</label>
+                  <textarea id="comment" name="comment" rows="4" cols="50" required></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary">Enviar</button>
+          </form>
+          <!-- Lista de avaliações e comentários -->
+          <div class="mt-4">
+              <h4 class="h6">Avaliações e Comentários Anteriores</h4>
+              <ul class="list-unstyled" id="avaliacoesLista">
+                  <!-- As avaliações serão carregadas dinamicamente aqui usando JavaScript -->
+              </ul>
+          </div>
+      </div>
+  </div>
+  
+  <!-- Adicione um elemento div para exibir mensagens de erro -->
+  <div id="erroApi" class="alert alert-danger" style="display: none;"></div>
+</div>
+
+<script>
+    const jwtToken = '{{ access_token }}';
+    function getImovelIdFromURL() {
+      const queryParams = new URLSearchParams(window.location.search);
+      return queryParams.get('imovelId'); // Altere 'imovelId' se o parâmetro tiver um nome diferente na sua URL
+    }
+    async function fetchBairroById(bairroId) {
+  return new Promise((resolve, reject) => {
+    $.get(baseURL + "localizacao/bairros/" + bairroId, (data) => {
+      resolve(data);
+    }).fail((error) => {
+      console.error("Erro ao carregar bairro por ID:", error);
+      reject(error);
+    });
+  });
+}
+  // Função para buscar fotos adicionais do imóvel
+  async function fetchFotosAdicionais(imovelId) {
+      try {
+        const response = await fetch(`${baseURL}imoveis/${imovelId}/fotosimovel`);
+        if (!response.ok) {
+          throw new Error('Erro na solicitação');
+        }
+        const data = await response.json();
+        return data;
+      } catch (error) {
+        console.error('Erro ao buscar fotos adicionais:', error);
+        return [];
+      }
+    }
+async function fetchCidadeById(cidadeId) {
+  return new Promise((resolve, reject) => {
+    $.get(baseURL + "localizacao/cidades/" + cidadeId, (data) => {
+      resolve(data);
+    }).fail((error) => {
+      console.error("Erro ao carregar cidade por ID:", error);
+      reject(error);
+    });
+  });
+}
+
+async function fetchEstadoById(estadoId) {
+  return new Promise((resolve, reject) => {
+    $.get(baseURL + "localizacao/estados/" + estadoId, (data) => {
+      resolve(data);
+    }).fail((error) => {
+      console.error("Erro ao carregar estado por ID:", error);
+      reject(error);
+    });
+  });
+}
+
+
+// Função para carregar os detalhes do imóvel
+async function carregarDetalhesDoImovel(imovelId) {
+  try {
+    const imovelResponse = await fetch(`${baseURL}imoveis/${imovelId}`, {
+      headers: {
+        'Authorization': `Bearer ${jwtToken}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!imovelResponse.ok) {
+      throw new Error('Erro na requisição de imóvel');
+    }
+
+    const imovelData = await imovelResponse.json();
+
+    const bairroData = await fetchBairroById(imovelData.id_bairro);
+    const cidadeData = await fetchCidadeById(imovelData.id_cidade);
+    const estadoData = await fetchEstadoById(imovelData.id_estado);
+
+    // Agora que você tem os detalhes de bairro, cidade e estado, você pode atualizar os elementos HTML
+    document.getElementById('codigoImovel').textContent = imovelData.id;
+    document.getElementById('modalidade').textContent = imovelData.modalidade;
+    document.getElementById('descricaoImovel').textContent = imovelData.descricao;
+    document.getElementById('preco').textContent = imovelData.preco;
+    document.getElementById('localizacaoImovel').textContent = `Bairro ${bairroData.nome}, Cidade ${cidadeData.nome}, Estado ${estadoData.nome}`;
+    document.getElementById('mapa').src = `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d7342.822064441322!2d-43.19738588075238!3d-22.97058293926071!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9bde0d8cf5461d%3A0x4d52d4b4a4a0e69b!2s${bairroData.nome}%2C%20${cidadeData.nome}%20-%20${estadoData.nome}!5e0!3m2!1spt-BR!2sbr!4v1587682210381!5m2!1spt-BR!2sbr`;
+    document.getElementById('tipoImovel').textContent = `${imovelData.id_tipo}`;
+    document.getElementById('numQuartos').textContent = `${imovelData.quartos}`;
+    document.getElementById('numBanheiros').textContent = `${imovelData.banheiros}`;
+    document.getElementById('area').textContent = `${imovelData.area}`;
+  } catch (error) {
+    console.error('Erro ao carregar os detalhes do imóvel:', error);
+    // Exiba uma mensagem de erro na página
+    document.getElementById('erroApi').textContent = 'Erro ao carregar os detalhes do imóvel. Tente novamente mais tarde.';
+    document.getElementById('erroApi').style.display = 'block';
+  }
+}
+
+async function fetchMediaAvaliacoes(imovelId) {
+      try {
+        const response = await fetch(`${baseURL}imoveis/${imovelId}/avaliacao`);
+        if (!response.ok) {
+          throw new Error('Erro na solicitação');
+        }
+        const data = await response.json();
+        // Suponha que a API retorne a média de avaliações em um campo 'mediaAvaliacoes'
+        return data.mediaAvaliacoes;
+      } catch (error) {
+        console.error('Erro ao buscar a média de avaliações:', error);
+        return null; // Retorne null em caso de erro
+      }
+    }
+
+  
+
+// Chame a função para carregar os detalhes do imóvel ao carregar a página
+window.addEventListener('DOMContentLoaded', async () => {
+  const imovelId = parseInt(getImovelIdFromURL(),10);
+  try {
+    const fotosAdicionais = await fetchFotosAdicionais(imovelId);
+
+    // Suponha que você tenha a média de avaliações em uma variável chamada 'mediaAvaliacoes'
+    const mediaAvaliacoes = await fetchMediaAvaliacoes(imovelId);
+
+    // Arredonde a média para o número inteiro mais próximo
+    const numEstrelasPreenchidas = Math.round(mediaAvaliacoes);
+
+    // Limpe o conteúdo atual do elemento 'avaliacoes'
+    const avaliacoesElement = document.getElementById('avaliacoes');
+    avaliacoesElement.innerHTML = '';
+
+    // Adicione as estrelas preenchidas ao elemento 'avaliacoes'
+    for (let i = 0; i < 5; i++) {
+      const estrela = document.createElement('span');
+      estrela.className = i < numEstrelasPreenchidas ? 'fa fa-star checked' : 'far fa-star';
+      avaliacoesElement.appendChild(estrela);
+    }
+
+    // Adicione o número de avaliações entre parênteses
+    const numAvaliacoesText = ` (${mediaAvaliacoes.toFixed(1)})`;
+    avaliacoesElement.appendChild(document.createTextNode(numAvaliacoesText));
+
+    carregarDetalhesDoImovel(imovelId);
+
+    renderizarCarrosselFotos(fotosAdicionais);
+  } catch (error) {
+    console.error('Erro ao buscar a média de avaliações:', error);
+    // Exiba uma mensagem de erro na página
+    document.getElementById('erroApi').textContent = 'Erro ao buscar a média de avaliações. Tente novamente mais tarde.';
+    document.getElementById('erroApi').style.display = 'block';
+  }
+});
+
+ // Função para renderizar o carrossel de fotos adicionais
+ function renderizarCarrosselFotos(fotos) {
+    const carrosselInner = document.querySelector('.carousel-inner');
+    const indicadoresCarrossel = document.querySelector('.carousel-indicators');
+
+    fotos.forEach((foto, index) => {
+      const carouselItem = document.createElement('div');
+      carouselItem.classList.add('carousel-item');
+      if (index === 0) {
+        carouselItem.classList.add('active');
+      }
+
+      const img = document.createElement('img');
+      img.src = foto.foto;
+      img.classList.add('d-block', 'w-100');
+      img.alt = 'Foto do Imóvel';
+
+      carouselItem.appendChild(img);
+      carrosselInner.appendChild(carouselItem);
+
+      const indicador = document.createElement('li');
+      indicador.setAttribute('data-target', '#carouselFotos');
+      indicador.setAttribute('data-slide-to', index.toString());
+      if (index === 0) {
+        indicador.classList.add('active');
+      }
+      indicadoresCarrossel.appendChild(indicador);
+    });
+  }
+  // Função para carregar avaliações existentes da API
+  function carregarAvaliacoes(idImovel) {
+    fetch(baseURL+`imoveis/${idImovel}/comentarios`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${jwtToken}`,
+      },
+    })
+      .then((response) => {
+        if (response.status === 200) {
+          return response.json(); // Converte a resposta em JSON
+        } else {
+          alert('Não foi possível carregar as avaliações.');
+          throw new Error('Erro ao carregar avaliações');
+        }
+      })
+      .then((data) => {
+        // Limpa a lista de avaliações atuais
+        const avaliacoesLista = document.querySelector('#avaliacoesLista');
+        avaliacoesLista.innerHTML = '';
+
+        // Adiciona as avaliações atuais à lista
+        data.forEach((avaliacao) => {
+          const avaliacaoItem = document.createElement('li');
+          avaliacaoItem.classList.add('media');
+          avaliacaoItem.innerHTML = `
+            <img src="/static/img/user.jpg" class="mr-3" alt="Foto do usuário">
+            <div class="media-body">
+              <h5 class="mt-0 mb-1">Usuário Anônimo</h5>
+              <p>Avaliação: ${avaliacao.valor_avaliacao} estrelas</p>
+              <p>Comentário: ${avaliacao.texto}</p>
+              <small class="text-muted">Postado em ${avaliacao.data}</small>
+            </div>
+          `;
+          avaliacoesLista.appendChild(avaliacaoItem);
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+
+  // Função para enviar uma nova avaliação
+  function enviarAvaliacao(event) {
+    event.preventDefault();
+    const rating = document.getElementById('rating').value;
+    const comment = document.getElementById('comment').value;
+    const idImovel = parseInt(getImovelIdFromURL(),10);
+
+    const novaAvaliacao = {
+      id_usuario: 1, // Substitua pelo ID do usuário atual
+      id_imovel: idImovel,
+      valor_avaliacao: rating,
+      texto: comment,
+      data: new Date().toISOString().split('T')[0], // Data atual no formato "yyyy-mm-dd"
+    };
+
+    fetch(baseURL+`imoveis/${idImovel}/comentarios`, {
+      method: 'POST',
+      body: JSON.stringify(novaAvaliacao),
+      headers: {
+        'Authorization': `Bearer ${jwtToken}`,
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((response) => {
+        if (response.status === 201) {
+          // Avaliação enviada com sucesso, você pode atualizar a lista de avaliações aqui.
+          carregarAvaliacoes(idImovel);
+
+          // Limpa os campos de avaliação e comentário
+          document.getElementById('rating').value = '';
+          document.getElementById('comment').value = '';
+        } else {
+          alert('Não foi possível enviar a avaliação.');
+        }
+      });
+  }
+
+  // Carregar as avaliações quando a página carregar
+  window.onload = function() {
+    const idImovel = getImovelIdFromURL(); // Substitua pelo ID do imóvel atual
+    carregarAvaliacoes(idImovel);
+  };
+
+  document.addEventListener("DOMContentLoaded", function () {
+  const favoritoButton = document.getElementById("favoritoButton");
+  const codigoImovel = parseInt(getImovelIdFromURL(), 10); // Código do imóvel
+
+  // Função para verificar se o imóvel já está nos favoritos
+  function verificarSeImovelEhFavorito(codigoImovel) {
+    return fetch(`${baseURL}usuarios/{{ user_id }}/favoritos`)
+      .then((response) => {
+        if (response.status === 200) {
+          return response.json();
+        } else {
+          throw new Error("Erro ao verificar os favoritos do usuário.");
+        }
+      })
+      .then((favoritosDoUsuario) => {
+        return favoritosDoUsuario.some((favorito) => favorito.id_imovel === codigoImovel);
+      })
+      .catch((error) => {
+        console.error(error);
+        return false; // Retorne false em caso de erro
+      });
+  }
+
+  verificarSeImovelEhFavorito(codigoImovel).then((isFavorito) => {
+    if (isFavorito) {
+      // Se o imóvel já estiver nos favoritos, atualize o botão e adicione um atributo 'data-action' com valor 'remove'
+      favoritoButton.innerHTML = '<i class="fas fa-heart"></i> Remover dos Favoritos';
+      favoritoButton.setAttribute("data-action", "remove");
+    }
+  });
+
+  favoritoButton.addEventListener("click", function () {
+    const dataAction = favoritoButton.getAttribute("data-action");
+
+    if (dataAction === "remove") {
+      // Se o imóvel está nos favoritos, remova-o
+      removerImovelDosFavoritos(codigoImovel);
+    } else {
+      // Caso contrário, adicione-o aos favoritos
+      adicionarImovelAosFavoritos(codigoImovel);
+    }
+  });
+
+  // Função para adicionar um imóvel aos favoritos
+  function adicionarImovelAosFavoritos(codigoImovel) {
+    // Faça uma solicitação POST para a API para adicionar o imóvel aos favoritos do usuário
+    // Substitua a URL da API, cabeçalhos e corpo da solicitação de acordo com sua implementação real
+
+    fetch(`${baseURL}usuarios/{{ user_id }}/favoritos`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id_imovel: codigoImovel,
+      }),
+    })
+      .then((response) => {
+        if (response.status === 201) {
+          // Atualize o botão e a interface do usuário para refletir a adição aos favoritos
+          favoritoButton.innerHTML = '<i class="fas fa-heart"></i> Remover dos Favoritos';
+          favoritoButton.setAttribute("data-action", "remove");
+        } else {
+          throw new Error("Erro ao adicionar o imóvel aos favoritos.");
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+
+  // Função para remover um imóvel dos favoritos
+  function removerImovelDosFavoritos(codigoImovel) {
+    // Faça uma solicitação DELETE para a API para remover o imóvel dos favoritos do usuário
+    // Substitua a URL da API e outros cabeçalhos de acordo com sua implementação real
+
+    fetch(`${baseURL}usuarios/{{ user_id }}/favoritos/${codigoImovel}`, {
+      method: "DELETE",
+    })
+      .then((response) => {
+        if (response.status === 204) {
+          // Atualize o botão e a interface do usuário para refletir a remoção dos favoritos
+          favoritoButton.innerHTML = '<i class="far fa-heart"></i> Adicionar aos Favoritos';
+          favoritoButton.setAttribute("data-action", "add");
+        } else {
+          throw new Error("Erro ao remover o imóvel dos favoritos.");
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+});
+
+</script>
+{% endblock %}

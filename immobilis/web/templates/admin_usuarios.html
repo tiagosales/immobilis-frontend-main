@@ -1,0 +1,360 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Gerenciamento de usuários - Imobiliária
+{% endblock %}
+
+{% block content %}
+ 
+<div class="container">
+  <div class="row">
+      <div class="col-md-12">
+          <h1 class="h4">Gerenciamento de Usuários</h1>
+          <hr>
+      </div>
+  </div>
+  <div class="row">
+      <div class="col-md-12">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+              <button class="btn btn-primary" data-toggle="modal" data-target="#addUsuarioModal">Adicionar Usuário</button>
+              <!--form class="form-inline my-2 my-lg-0" aria-label="Pesquisar">
+                  <input class="form-control mr-sm-2" type="search" placeholder="Pesquisar" aria-label="Pesquisar">
+                  <button class="btn btn-outline-secondary my-2 my-sm-0" type="submit">Buscar</button>
+              </form-->
+          </div>
+      </div>
+      <div class="table-responsive">
+          <table class="table table-striped">
+              <thead>
+                  <tr>
+                      <th scope="col">Código do Usuário</th>
+                      <th scope="col">Nome</th>
+                      <th scope="col">Email</th>
+                      <th scope="col">Perfil</th>
+                      <th scope="col" class="text-nowrap">Ações</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  {% for usuario in usuarios %}
+                  <tr>
+                      <td>{{ usuario.id }}</td>
+                      <td>{{ usuario.nome }}</td>
+                      <td>{{ usuario.email }}</td>
+                      <td>{{ usuario.id_perfil }}</td>
+                      <td class="text-nowrap">
+                          <button class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#editarUsuarioModal" data-id="{{ usuario.id }}" data-nome="{{ usuario.nome }}" data-email="{{ usuario.email }}" data-perfil-id="{{ usuario.id_perfil }}">Editar</button>
+                          <button class="btn btn-danger btn-sm" data-toggle="modal" data-target="#excluirUsuarioModal" data-id="{{ usuario.id }}">Excluir</button>
+                      </td>
+                  </tr>
+                  {% endfor %}
+              </tbody>
+          </table>
+      </div>
+  </div>
+</div>
+
+<!-- Modal Adicionar Usuário -->
+<div class="modal fade" id="addUsuarioModal" tabindex="-1" role="dialog" aria-labelledby="addUsuarioModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="addUsuarioModalLabel">Adicionar Usuário</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          <div class="modal-body">
+              <form id="addUsuarioForm" onsubmit="event.preventDefault(); adicionarUsuario(event);">
+                  <div class="form-group">
+                      <label for="nomeUsuarioAdd" class="col-form-label">Nome:</label>
+                      <input type="text" class="form-control" id="nomeUsuarioAdd">
+                  </div>
+                  <div class="form-group">
+                      <label for="emailUsuarioAdd" class="col-form-label">Email:</label>
+                      <input type="email" class="form-control" id="emailUsuarioAdd">
+                  </div>
+                  <div class="form-group">
+                    <label for="senhaUsuarioAdd" class="col-form-label">Senha:</label>
+                    <input type="password" class="form-control" id="senhaUsuarioAdd">
+                  </div>
+                  <div class="form-group">
+                      <label for="perfilUsuarioAdd" class="col-form-label">Perfil:</label>
+                      <select class="form-control" id="perfilUsuarioAdd">
+                          <!-- A lista de perfis será adicionada aqui pelo JavaScript -->
+                      </select>
+                  </div>
+                  <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                      <button type="submit" class="btn btn-primary">Salvar</button>
+                  </div>
+              </form>
+          </div>
+      </div>
+  </div>
+</div>
+<!-- Modal Editar Usuário -->
+<div class="modal fade" id="editarUsuarioModal" tabindex="-1" role="dialog" aria-labelledby="editarUsuarioModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="editarUsuarioModalLabel">Editar Usuário</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          <div class="modal-body">
+              <form id="editUsuarioForm" onsubmit="event.preventDefault(); editarUsuario(event);">
+                  <input type="hidden" name="id">
+                  <div class="form-group">
+                      <label for="nomeUsuarioEdit" class="col-form-label">Nome:</label>
+                      <input type="text" class="form-control" id="nomeUsuarioEdit">
+                  </div>
+                  <div class="form-group">
+                      <label for="emailUsuarioEdit" class="col-form-label">Email:</label>
+                      <input type="email" class="form-control" id="emailUsuarioEdit">
+                  </div>
+                  <div class="form-group">
+                    <label for="perfilUsuarioEdit" class="col-form-label">Perfil:</label>
+                    <select class="form-control" id="perfilUsuarioEdit">
+                        <!-- A lista de perfis será adicionada aqui pelo JavaScript -->
+                    </select>
+                </div>
+                  </div>
+                  <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                      <button type="submit" class="btn btn-primary">Salvar</button>
+                  </div>
+              </form>
+          </div>
+      </div>
+  </div>
+</div>
+
+<!-- Modal Excluir Usuário -->
+<div class="modal fade" id="excluirUsuarioModal" tabindex="-1" role="dialog" aria-labelledby="excluirUsuarioModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="excluirUsuarioModalLabel">Excluir Usuário</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          <div class="modal-body">
+              <p>Tem certeza que deseja excluir este usuário?</p>
+              <form id="deleteUsuarioForm" onsubmit="event.preventDefault(); excluirUsuario(event);">
+                  <input type="hidden" name="id">
+                  <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                      <button type="submit" class="btn btn-danger">Excluir</button>
+                  </div>
+              </form>
+          </div>
+      </div>
+  </div>
+</div>
+<script>
+  const jwtToken = '{{ access_token }}';
+  let perfisMap = new Map();
+  function carregarPerfis() {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const response = await fetch(baseURL+'admin/perfis', {
+                headers: {
+                    'Authorization': `Bearer ${jwtToken}`,
+                    'Content-Type': 'application/json',
+                },
+            });
+            const perfis = await response.json();
+            const perfilSelect = document.getElementById('perfilUsuarioEdit');
+            const perfilSelectAdd = document.getElementById('perfilUsuarioAdd');
+
+            perfis.forEach((perfil) => {
+                const option = document.createElement('option');
+                option.value = perfil.id;
+                option.textContent = perfil.nome;
+                perfilSelect.appendChild(option);
+                perfilSelectAdd.appendChild(option.cloneNode(true));
+
+                perfisMap.set(perfil.id, perfil.nome);
+            });
+
+            resolve();
+        } catch (error) {
+            console.error('Erro ao carregar perfis:', error);
+            reject(error);
+        }
+    });
+}
+
+  function adicionarUsuario(event) {
+      const form = event.target;
+      const formData = new FormData(form);
+      const nome = form.querySelector('#nomeUsuarioAdd').value;
+      const email = form.querySelector('#emailUsuarioAdd').value;
+      const senha = form.querySelector('#senhaUsuarioAdd').value;
+      const perfil = form.querySelector('#perfilUsuarioAdd').value;
+
+      const addUser = {
+        nome,
+        email,
+        senha,
+        id_perfil: parseInt(perfil),
+      };
+      
+      fetch(baseURL+'usuarios', {
+          method: 'POST',
+          body: JSON.stringify(addUser),
+          headers: {
+              'Authorization': `Bearer ${jwtToken}`,
+              'Content-Type': 'application/json',
+          },
+      })
+      .then((response) => {
+          if (response.status === 201) {
+              location.reload();
+          } else {
+              alert('Não foi possível adicionar o usuário');
+          }
+      });
+  }
+
+  function editarUsuario(event) {
+    const form = event.target;
+    const idField = form.querySelector('input[name="id"]');
+    const id = idField.value;
+    const nome = form.querySelector('#nomeUsuarioEdit').value;
+    const email = form.querySelector('#emailUsuarioEdit').value;
+    const perfil = form.querySelector('#perfilUsuarioEdit').value;
+
+    const updatedUser = {
+        nome,
+        email,
+        id_perfil: parseInt(perfil),
+    };
+
+    fetch(baseURL+`usuarios/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify(updatedUser),
+        headers: {
+            'Authorization': `Bearer ${jwtToken}`,
+            'Content-Type': 'application/json',
+        },
+    })
+    .then((response) => {
+        if (response.status === 200) {
+            location.reload();
+        } else {
+            alert('Não foi possível editar o usuário');
+        }
+    });
+}
+
+  function excluirUsuario(event) {
+      const form = event.target;
+      const formData = new FormData(form);
+      const id = formData.get('id');
+
+      fetch(baseURL+`usuarios/${id}`, {
+          method: 'DELETE',
+          headers: {
+              'Authorization': `Bearer ${jwtToken}`,
+              'Content-Type': 'application/json',
+          },
+          })
+      .then((response) => {
+          if (response.status === 204) {
+          location.reload();
+          } else {
+          alert('Não foi possível excluir o usuário');
+          }
+      });
+      }
+      async function buscarUsuarios(event) {
+          if (event) {
+              event.preventDefault();
+          }
+          await carregarPerfis();
+          //const searchForm = document.querySelector('form input[type="search"]').form;
+          //const searchTerm = searchForm.querySelector('input[type="search"]').value;
+      
+          //fetch(`http://localhost:5000/api/v1/usuarios?search=${encodeURIComponent(searchTerm)}`, {
+          fetch(baseURL+'usuarios', {
+          headers: {
+              'Authorization': `Bearer ${jwtToken}`,
+              'Content-Type': 'application/json',
+          },
+        })
+          .then((response) => response.json())
+          .then((usuarios) => {
+              const tbody = document.querySelector('table tbody');
+              tbody.innerHTML = '';
+          
+              usuarios.forEach((usuario) => {
+                  const tr = document.createElement('tr');
+              
+                  const tdId = document.createElement('td');
+                  tdId.textContent = usuario.id;
+                  tr.appendChild(tdId);
+              
+                  const tdNome = document.createElement('td');
+                  tdNome.textContent = usuario.nome;
+                  tr.appendChild(tdNome);
+              
+                  const tdEmail = document.createElement('td');
+                  tdEmail.textContent = usuario.email;
+                  tr.appendChild(tdEmail);
+              
+                  const tdPerfil = document.createElement('td');
+                  tdPerfil.textContent = perfisMap.get(usuario.id_perfil);
+                  tr.appendChild(tdPerfil);
+
+              
+                  const tdAcoes = document.createElement('td');
+                  tdAcoes.innerHTML = `
+                      <button class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#editarUsuarioModal" data-id="${usuario.id}" data-nome="${usuario.nome}" data-email="${usuario.email}" data-perfil-id="${usuario.id_perfil}">Editar</button>
+                      <button class="btn btn-danger btn-sm" data-toggle="modal" data-target="#excluirUsuarioModal" data-id="${ usuario.id }">Excluir</button>
+                  `;
+                  tr.appendChild(tdAcoes);
+              
+                  tbody.appendChild(tr);
+              });
+          });
+      }
+      
+      document.addEventListener('DOMContentLoaded', function() {
+       //   const searchForm = document.querySelector('form[aria-label="Pesquisar"]');
+       //   if (searchForm) {
+       //       searchForm.addEventListener('submit', buscarUsuarios);
+       //   } else {
+       //       console.error('Formulário de pesquisa não encontrado');
+       //   }
+
+          buscarUsuarios(null); 
+          $(document).ready(function () {
+  $('#editarUsuarioModal').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget); // Botão que acionou o modal
+    var id = button.data('id'); // Extrai o atributo data-id
+    var nome = button.data('nome');
+    var email = button.data('email');
+    var perfil = button.data('perfil-id');
+
+    var modal = $(this);
+    modal.find('input[name="id"]').val(id);
+    modal.find('#nomeUsuarioEdit').val(nome);
+    modal.find('#emailUsuarioEdit').val(email);
+    modal.find('#perfilUsuarioEdit').val(perfil);
+  });
+  $('#excluirUsuarioModal').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget); // Botão que acionou o modal
+    var id = button.data('id'); // Extrai o atributo data-id
+
+
+    var modal = $(this);
+    modal.find('input[name="id"]').val(id);
+  });
+});
+});
+</script>
+
+{% endblock %}

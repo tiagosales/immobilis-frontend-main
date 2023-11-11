@@ -1,0 +1,192 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Busca - Imobiliária
+{% endblock %}
+
+{% block content %}
+ 
+	<!-- formulário de busca -->
+<div class="container-fluid pt-5">
+	<div class="row justify-content-center">
+		<div class="col-md-3 mb-3">
+			<form id="search-form">
+				<div class="form-group">
+					<label for="modalidade">Modalidade:</label>
+					<select class="form-control" id="modalidade">
+						<option value="aluguel">Aluguel</option>
+						<option value="venda">Compra</option>
+					</select>
+				</div>
+				<div class="form-group">
+          <label for="estado">Estado:</label>
+          <select class="form-control" id="estado"></select>
+        </div>
+        <div class="form-group">
+          <label for="cidade">Cidade:</label>
+          <select class="form-control" id="cidade"></select>
+        </div>
+        <div class="form-group">
+          <label for="bairro">Bairro:</label>
+          <select class="form-control" id="bairro"></select>
+        </div>
+				<div class="form-group">
+					<label for="tipo">Tipo de imóvel:</label>
+					<select class="form-control" id="id_tipo">
+						<option>Todos</option>
+						<option value="1">Casa</option>
+						<option value="2">Apartamento</option>
+					</select>
+				</div>
+				<div class="form-group">
+					<label for="quartos">Número de quartos:</label>
+					<select class="form-control" id="quartos">
+						<option>Todos</option>
+						<option>1</option>
+						<option>2</option>
+						<option>3</option>
+						<option>4</option>
+					</select>
+				</div>
+        <div class="form-group">
+          <label for="preco-min">Preço mínimo:</label>
+          <input type="number" class="form-control" id="preco-min" min="0">
+        </div>
+        <div class="form-group">
+          <label for="preco-max">Preço máximo:</label>
+          <input type="number" class="form-control" id="preco-max" min="0">
+        </div>
+        <!-- Formulário de busca de favoritos -->
+        <div class="form-check">
+          <input type="checkbox" class="form-check-input" id="buscar-favoritos">
+          <label class="form-check-label" for="buscar-favoritos">Buscar favoritos</label>
+        </div>
+
+				<button type="submit" class="btn btn-primary btn-block">Buscar</button>
+			</form>
+		</div>
+    <div class="col-md-9" id="imoveis-container">
+      <div class="row" id="property-list">
+    <script>
+      // Seu código JavaScript aqui
+      $(document).ready(function () {
+        const api_url = baseURL+"imoveis";
+        
+        function fetchEstados() {
+          $.get(baseURL+"localizacao/estados", function (data) {
+            let estadoSelect = $("#estado");
+            estadoSelect.append($("<option>").text("Selecione um estado"));
+            data.forEach((estado) => {
+              estadoSelect.append($("<option>").val(estado.id).text(estado.nome));
+            });
+          });
+        }
+
+        function fetchCidades(idEstado) {
+          $.get(baseURL+"localizacao/cidades", { id_estado: idEstado }, function (data) {
+            let cidadeSelect = $("#cidade");
+            cidadeSelect.empty();
+            cidadeSelect.append($("<option>").val("").text("Selecione uma cidade"));
+            data.forEach((cidade) => {
+              cidadeSelect.append($("<option>").val(cidade.id).text(cidade.nome));
+            });
+          });
+        }
+
+        function fetchBairros(idCidade) {
+          $.get(baseURL+"localizacao/bairros", { id_cidade: idCidade }, function (data) {
+            let bairroSelect = $("#bairro");
+            bairroSelect.empty();
+            bairroSelect.append($("<option>").val("").text("Selecione um bairro"));
+            data.forEach((bairro) => {
+              bairroSelect.append($("<option>").val(bairro.id).text(bairro.nome));
+            });
+          });
+        }
+
+        function fetchProperties(filters) {
+          // Atualize a URL com os parâmetros de pesquisa
+          // Verificar se a caixa "Buscar favoritos" está marcada
+          const buscarFavoritos = $('#buscar-favoritos').prop('checked');
+
+          // Se estiver marcada, adicione um filtro para buscar favoritos
+          if (buscarFavoritos) {
+            filters.favoritos = true;
+          }
+          let url = api_url;
+          if (filters) {
+            url += '?' + new URLSearchParams(filters).toString();
+          }
+        
+          $.ajax({
+            url: url,
+            type: "GET",
+            dataType: "json",
+            success: function (data) {
+              displayProperties(data);
+            },
+            error: function (error) {
+              console.log("Erro ao buscar imóveis:", error);
+            },
+          });
+        }
+    
+        function displayProperties(properties) {
+          let propertyList = $("#property-list");
+          propertyList.empty();
+    
+          properties.forEach((property) => {
+            let propertyCard = `
+              <div class="col-md-4 mb-3">
+                <div class="card">
+                  <img class="card-img-top" src="${property.foto}" alt="Imagem do imóvel">
+                  <div class="card-body">
+                    <h5 class="card-title">${property.titulo}</h5>
+                    <p class="card-text">${property.descricao}</p>
+                    <p class="card-text"><strong>Preço:</strong> R$${property.preco.toLocaleString("pt-BR")}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                      <div class="btn-group">
+                        <button type="button" onclick="window.location.href = '/detalhesimovel/?imovelId=${property.id}'" class="btn btn-sm btn-outline-secondary">Ver detalhes</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>`;
+            propertyList.append(propertyCard);
+          });
+        }
+        $("#estado").change(function () {
+          let idEstado = $(this).val();
+          fetchCidades(idEstado);
+        });
+      
+        $("#cidade").change(function () {
+          let idCidade = $(this).val();
+          fetchBairros(idCidade);
+        });
+      
+        // Disparar a busca de imóveis ao carregar a página
+        fetchProperties();
+      
+        // Adicione esta linha novamente para carregar os estados ao carregar a página
+        fetchEstados();
+      
+        // Atualizar a busca de imóveis ao submeter o formulário
+        $('#search-form').on('submit', function (event) {
+          event.preventDefault();
+          let filters = {
+            modalidade: $('#modalidade').val(),
+            id_estado: $('#estado').val(),
+            id_cidade: $('#cidade').val(),
+            id_bairro: $('#bairro').val(),
+            id_tipo: $('#id_tipo').val(),
+            quartos: $('#quartos').val(),
+            preco_min: $('#preco-min').val(),
+            preco_max: $('#preco-max').val(),
+            usuario: '{{ user_id }}',
+          };
+          fetchProperties(filters);
+        });
+      });
+    </script>
+{% endblock %}

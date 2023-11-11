@@ -1,0 +1,350 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Gerenciamento de Perfis - Imobiliária
+{% endblock %}
+
+{% block content %}
+ 
+<div class="container">
+  <div class="row">
+      <div class="col-md-12">
+          <h1 class="h4">Gerenciamento de Perfis</h1>
+          <hr>
+      </div>
+  </div>
+  <div class="row">
+      <div class="col-md-12">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+              <!--button class="btn btn-primary" data-toggle="modal" data-target="#addPerfilModal">Adicionar Perfil</button-->
+          </div>
+      </div>
+      <div class="table-responsive">
+          <table class="table table-striped">
+              <thead>
+                  <tr>
+                      <th scope="col">Código</th>
+                      <th scope="col">Nome</th>
+                      <th scope="col">Descrição</th>
+                      <th scope="col" class="text-nowrap">Ações</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  {% for perfil in Perfil %}
+                  <tr>
+                      <td>{{ perfil.id }}</td>
+                      <td>{{ perfil.nome }}</td>
+                      <td>{{ perfil.descricao }}</td>
+                      <td class="text-nowrap">
+                          <button class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#editarPerfilModal" data-id="{{ perfil.id }}" data-nome="{{ perfil.nome }}" data-descricao="{{ perfil.descricao }}" data-telas-id="{{ perfil.id_telas }}">Editar</button>
+                          <!--button class="btn btn-danger btn-sm" data-toggle="modal" data-target="#excluirPerfilModal" data-id="{{ perfil.id }}">Excluir</button-->
+                      </td>
+                  </tr>
+                  {% endfor %}
+              </tbody>
+          </table>
+      </div>
+  </div>
+</div>
+
+<!-- Modal Adicionar Perfil -->
+<!--div class="modal fade" id="addPerfilModal" tabindex="-1" role="dialog" aria-labelledby="addPerfilModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="addPerfilModalLabel">Adicionar Perfil</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          <div class="modal-body">
+              <form id="addPerfilForm" onsubmit="event.preventDefault(); adicionarPerfil(event);">
+                  <div class="form-group">
+                      <label for="nomePerfilAdd" class="col-form-label">Nome:</label>
+                      <input type="text" class="form-control" id="nomePerfilAdd">
+                  </div>
+                  <div class="form-group">
+                      <label for="descricaoPerfilAdd" class="col-form-label">Descricao:</label>
+                      <input type="text" class="form-control" id="descricaoPerfilAdd">
+                  </div>
+                  <div class="form-group">
+                      <label for="telasPerfilAdd" class="col-form-label">Telas:</label>
+                      <select class="form-control" id="telasPerfilAdd">
+                      </select>
+                  </div>
+                  <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                      <button type="submit" class="btn btn-primary">Salvar</button>
+                  </div>
+              </form>
+          </div>
+      </div>
+  </div>
+</div-->
+<!-- Modal Editar Perfil -->
+<div class="modal fade" id="editarPerfilModal" tabindex="-1" role="dialog" aria-labelledby="editarPerfilModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="editarPerfilModalLabel">Editar Perfil</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          <div class="modal-body">
+              <form id="editPerfilForm" onsubmit="event.preventDefault(); editarPerfil(event);">
+                  <input type="hidden" name="id">
+                  <div class="form-group">
+                      <label for="nomePerfilEdit" class="col-form-label">Nome:</label>
+                      <input type="text" class="form-control" id="nomePerfilEdit">
+                  </div>
+                  <div class="form-group">
+                      <label for="descricaoPerfilEdit" class="col-form-label">Descricao:</label>
+                      <input type="descricao" class="form-control" id="descricaoPerfilEdit">
+                  </div>
+                  <div class="form-group">
+                    <label for="telasPerfilEdit" class="col-form-label">Telas:</label>
+                    <select class="form-control" id="telasPerfilEdit" multiple>
+                        <!-- A lista de perfis será adicionada aqui pelo JavaScript -->
+                    </select>
+                </div>
+                  </div>
+                  <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                      <button type="submit" class="btn btn-primary">Salvar</button>
+                  </div>
+              </form>
+          </div>
+      </div>
+  </div>
+</div>
+
+<!-- Modal Excluir Perfil -->
+<!--div class="modal fade" id="excluirPerfilModal" tabindex="-1" role="dialog" aria-labelledby="excluirPerfilModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="excluirPerfilModalLabel">Excluir Perfil</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          <div class="modal-body">
+              <p>Tem certeza que deseja excluir este perfil?</p>
+              <form id="deletePerfilForm" onsubmit="event.preventDefault(); excluirPerfil(event);">
+                  <input type="hidden" name="id">
+                  <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                      <button type="submit" class="btn btn-danger">Excluir</button>
+                  </div>
+              </form>
+          </div>
+      </div>
+  </div>
+</div-->
+<script>
+  const jwtToken = '{{ access_token }}';
+  let telasMap = new Map();
+  function carregarTelas() {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const response = await fetch(baseURL+'admin/telas', {
+          headers: {
+            'Authorization': `Bearer ${jwtToken}`,
+            'Content-Type': 'application/json',
+          },
+        });
+
+        const telas = await response.json();
+        const telaSelect = document.getElementById('telasPerfilEdit');
+
+        telas.forEach((tela) => {
+          const option = document.createElement('option');
+          option.value = tela.id;
+          option.textContent = tela.nome;
+          telaSelect.appendChild(option);
+
+          telasMap.set(tela.id, tela.nome);
+        });
+
+        resolve();
+      } catch (error) {
+        console.error('Erro ao carregar telas:', error);
+        reject(error);
+      }
+    });
+  }
+
+
+  /*function adicionarPerfil(event) {
+      const form = event.target;
+      const formData = new FormData(form);
+      const nome = form.querySelector('#nomePerfilAdd').value;
+      const email = form.querySelector('#descricaoPerfilAdd').value;
+      const perfil = form.querySelector('#telaPerfilAdd').value;
+
+      const addPerfil = {
+        nome,
+        descricao,
+        telas: parseInt(telas),
+      };
+      
+      fetch(baseURL+'admin/perfis', {
+          method: 'POST',
+          body: JSON.stringify(addPerfil),
+          headers: {
+              'Authorization': `Bearer ${jwtToken}`,
+              'Content-Type': 'application/json',
+          },
+      })
+      .then((response) => {
+          if (response.status === 201) {
+              location.reload();
+          } else {
+              alert('Não foi possível adicionar o perfil');
+          }
+      });
+  }*/
+
+  function editarPerfil() {
+    const form = document.getElementById('editPerfilForm');
+    const idField = form.querySelector('input[name="id"]');
+    const id = idField.value;
+    const nome = form.querySelector('#nomePerfilEdit').value;
+    const descricao = form.querySelector('#descricaoPerfilEdit').value;
+    const telasSelect = form.querySelector('#telasPerfilEdit');
+    const telas = Array.from(telasSelect.selectedOptions).map(option => parseInt(option.value));
+
+    const updatedPerfil = {
+      nome,
+      descricao,
+      telas,
+    };
+
+    fetch(baseURL+`admin/perfis/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(updatedPerfil),
+      headers: {
+        'Authorization': `Bearer ${jwtToken}`,
+        'Content-Type': 'application/json',
+      },
+    })
+    .then((response) => {
+      if (response.status === 200) {
+        location.reload();
+      } else {
+        alert('Não foi possível editar o perfil');
+      }
+    });
+  }
+
+  function excluirPerfil(event) {
+      const form = event.target;
+      const formData = new FormData(form);
+      const id = formData.get('id');
+
+      fetch(baseURL+`admin/perfis/${id}`, {
+          method: 'DELETE',
+          headers: {
+              'Authorization': `Bearer ${jwtToken}`,
+              'Content-Type': 'application/json',
+          },
+          })
+      .then((response) => {
+          if (response.status === 204) {
+          location.reload();
+          } else {
+          alert('Não foi possível excluir o perfil');
+          }
+      });
+      }
+      async function buscarPerfil(event) {
+          if (event) {
+              event.preventDefault();
+          }
+          await carregarTelas();
+          //const searchForm = document.querySelector('form input[type="search"]').form;
+          //const searchTerm = searchForm.querySelector('input[type="search"]').value;
+      
+          //fetch(`http://localhost:5000/api/v1/Perfil?search=${encodeURIComponent(searchTerm)}`, {
+          fetch(baseURL+'admin/perfis', {
+          headers: {
+              'Authorization': `Bearer ${jwtToken}`,
+              'Content-Type': 'application/json',
+          },
+        })
+          .then((response) => response.json())
+          .then((perfis) => {
+              const tbody = document.querySelector('table tbody');
+              tbody.innerHTML = '';
+          
+              perfis.forEach((perfil) => {
+                  const tr = document.createElement('tr');
+              
+                  const tdId = document.createElement('td');
+                  tdId.textContent = perfil.id;
+                  tr.appendChild(tdId);
+              
+                  const tdNome = document.createElement('td');
+                  tdNome.textContent = perfil.nome;
+                  tr.appendChild(tdNome);
+              
+                  const tdDescricao = document.createElement('td');
+                  tdDescricao.textContent = perfil.descricao;
+                  tr.appendChild(tdDescricao);
+              
+             
+                  const tdAcoes = document.createElement('td');
+                  tdAcoes.innerHTML = `
+                      <button class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#editarPerfilModal" data-id="${perfil.id}" data-nome="${perfil.nome}" data-descricao="${perfil.descricao}" data-telas-id="${perfil.telas}">Editar</button>
+                      <!--button class="btn btn-danger btn-sm" data-toggle="modal" data-target="#excluirPerfilModal" data-id="${ perfil.id }">Excluir</button-->
+                  `;
+                  tr.appendChild(tdAcoes);
+              
+                  tbody.appendChild(tr);
+              });
+          });
+      }
+      
+      document.addEventListener('DOMContentLoaded', function() {
+       //   const searchForm = document.querySelector('form[aria-label="Pesquisar"]');
+       //   if (searchForm) {
+       //       searchForm.addEventListener('submit', buscarPerfil);
+       //   } else {
+       //       console.error('Formulário de pesquisa não encontrado');
+       //   }
+
+          buscarPerfil(null); 
+          $(document).ready(function () {
+            $('#editarPerfilModal').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget); // Botão que acionou o modal
+    var id = button.data('id'); // Extrai o atributo data-id
+    var nome = button.data('nome');
+    var descricao = button.data('descricao');
+    //var telas = button.data('telas-id');
+    var telas = button.data('telas-id').toString().split(',');
+    var modal = $(this);
+    modal.find('input[name="id"]').val(id);
+    modal.find('#nomePerfilEdit').val(nome);
+    modal.find('#descricaoPerfilEdit').val(descricao);
+
+    const telasSelect = modal.find('#telasPerfilEdit');
+    telasSelect.val(telas);
+    telas.forEach(tela => {
+        telasSelect.find(`option[value="${tela}"]`).prop('selected', true);
+    });
+  });
+
+  $('#excluirPerfilModal').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget); // Botão que acionou o modal
+    var id = button.data('id'); // Extrai o atributo data-id
+
+
+    var modal = $(this);
+    modal.find('input[name="id"]').val(id);
+  });
+});
+});
+</script>
+
+{% endblock %}
