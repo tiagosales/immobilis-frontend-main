@@ -485,8 +485,6 @@ function enviarMensagem(event) {
     nome: nome,
     texto: texto,
     email: email,
-    lida: false,
-    data: new Date().toISOString().split('T')[0],
   };
 
   fetch(`${baseURL}mensagens/`, {

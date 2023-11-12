@@ -18,7 +18,6 @@
         <table class="table table-striped">
           <thead>
             <tr>
-              <th scope="col">ID</th>
               <th scope="col">Cod Imovel</th>
               <th scope="col">Remetente</th>
               <th scope="col">Email</th>
@@ -51,13 +50,14 @@
 
       mensagens.forEach(mensagem => {
         const row = document.createElement('tr');
+        const data = new Date(mensagem.data);
+        const dataFormatada = `${data.toLocaleDateString()} ${data.toLocaleTimeString()}`;
         row.innerHTML = `
-          <td>${mensagem.id}</td>
           <td>${mensagem.id_imovel}</td>
           <td>${mensagem.nome}</td>
           <td>${mensagem.email}</td>
           <td>${mensagem.texto}</td>
-          <td>${mensagem.data}</td>
+          <td>${dataFormatada}</td>
         `;
         mensagemTableBody.appendChild(row);
       });
