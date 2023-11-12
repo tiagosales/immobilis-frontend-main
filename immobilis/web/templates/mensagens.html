@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Visualização de Mensagens - Imobiliária
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <h1 class="h4">Visualização de Mensagens</h1>
+      <hr>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="table-responsive">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th scope="col">ID</th>
+              <th scope="col">Cod Imovel</th>
+              <th scope="col">Remetente</th>
+              <th scope="col">Email</th>
+              <th scope="col">Mensagem</th>
+              <th scope="col">Data</th>
+            </tr>
+          </thead>
+          <tbody id="mensagem-table-body">
+            <!-- Aqui serão adicionadas as linhas da tabela via JavaScript -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Função para carregar as mensagens do usuário via fetch
+  function carregarMensagens() {
+    fetch(`${baseURL}mensagens/{{ user_id }}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': 'Bearer SEU_TOKEN_AQUI' // Substitua pelo seu token de autenticação
+      }
+    })
+    .then(response => response.json())
+    .then(mensagens => {
+      const mensagemTableBody = document.getElementById('mensagem-table-body');
+      mensagemTableBody.innerHTML = ''; // Limpa a tabela antes de adicionar os dados
+
+      mensagens.forEach(mensagem => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${mensagem.id}</td>
+          <td>${mensagem.id_imovel}</td>
+          <td>${mensagem.nome}</td>
+          <td>${mensagem.email}</td>
+          <td>${mensagem.texto}</td>
+          <td>${mensagem.data}</td>
+        `;
+        mensagemTableBody.appendChild(row);
+      });
+    })
+    .catch(error => {
+      console.error('Erro ao carregar mensagens:', error);
+    });
+  }
+
+  // Chame a função para carregar as mensagens quando a página carregar
+  window.addEventListener('load', carregarMensagens);
+</script>
+
+{% endblock %}

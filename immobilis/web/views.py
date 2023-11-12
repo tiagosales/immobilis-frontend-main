@@ -27,3 +27,9 @@ def tiposimoveis(request):
 
 def detalhesimovel(request):
     return render(request, 'detalhes_imovel.html')
+
+def mensagens(request):
+    return render(request, 'mensagens.html')
+
+def estatisticas(request):
+    return render(request, 'estatisticas.html')

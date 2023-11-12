@@ -1,285 +1,563 @@
-{% extends 'base.html' %}
+{% extends 'base.html' %} 
 
-{% block title %}
-  Gerenciamento de Imoveis - Imobiliária
-{% endblock %}
+{% block title %} Gerenciamento de Imoveis - Imobiliária {% endblock %} 
 
 {% block content %}
- 
+
 <div class="container">
   <div class="row">
-      <div class="col-md-12">
-          <h1 class="h4">Gerenciamento de Imoveis</h1>
-          <hr>
-      </div>
+    <div class="col-md-12">
+      <h1 class="h4">Gerenciamento de Imoveis</h1>
+      <hr />
+    </div>
   </div>
   <div class="row">
-      <div class="col-md-12">
-          <div class="d-flex justify-content-between align-items-center mb-3">
-              <button class="btn btn-primary" data-toggle="modal" data-target="#addImovelModal">Adicionar Imovel</button>
-          </div>
+    <div class="col-md-12">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <button
+          class="btn btn-primary"
+          data-toggle="modal"
+          data-target="#addImovelModal"
+        >
+          Adicionar Imovel
+        </button>
       </div>
-      <div class="table-responsive">
-          <table class="table table-striped">
-              <thead>
-                  <tr>
-                    <th scope="col">ID</th>
-                    <th scope="col">Título</th>
-                    <th scope="col">Preço</th>
-                    <th scope="col">Modalidade</th>
-                    <th scope="col">Ações</th>
-                  </tr>
-              </thead>
-              <tbody>
-                  {% for imovel in Imovel %}
-                  <tr>
-                    <th scope="row">{{ imovel.id }}</th>
-                    <td>{{ imovel.titulo }}</td>
-                    <td>{{ imovel.preco }}</td>
-                    <td>{{ imovel.modalidade }}</td>
-                      <td class="text-nowrap">
-                          <button class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#editarImovelModal" data-id="{{ imovel.id }}" data-titulo="{{ imovel.titulo }}" data-descricao="{{ imovel.descricao }}" data-endereco="{{ imovel.endereco }}" data-id_cidade="{{ imovel.id_cidade }}" data-id_estado="{{ imovel.id_estado }}" data-id_bairro="{{ imovel.id_bairro }}" data-preco="{{ imovel.preco }}" data-id_tipo="{{ imovel.id_tipo }}" data-quartos="{{ imovel.quartos }}" data-banheiros="{{ imovel.banheiros }}" data-suites="{{ imovel.suites }}" data-vagas_garagem="{{ imovel.vagas_garagem }}" data-area="{{ imovel.area }}" data-foto="{{ imovel.foto }}" data-modalidade="{{ imovel.modalidade }}">Editar</button>
-                          <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#imageModal" data-id="{{ imovel.id }}">Gerenciar Imagens</button>
-                          <button class="btn btn-danger btn-sm" data-toggle="modal" data-target="#excluirImovelModal" data-id="{{ imovel.id }}">Excluir</button>
-                      </td>
-                  </tr>
-                  {% endfor %}
-              </tbody>
-          </table>
-      </div>
+    </div>
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Título</th>
+            <th scope="col">Preço</th>
+            <th scope="col">Modalidade</th>
+            <th scope="col">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for imovel in Imovel %}
+          <tr>
+            <th scope="row">{{ imovel.id }}</th>
+            <td>{{ imovel.titulo }}</td>
+            <td>{{ imovel.preco }}</td>
+            <td>{{ imovel.modalidade }}</td>
+            <td class="text-nowrap">
+              <button
+                class="btn btn-secondary btn-sm"
+                data-toggle="modal"
+                data-target="#editarImovelModal"
+                data-id="{{ imovel.id }}"
+                data-titulo="{{ imovel.titulo }}"
+                data-descricao="{{ imovel.descricao }}"
+                data-endereco="{{ imovel.endereco }}"
+                data-id_cidade="{{ imovel.id_cidade }}"
+                data-id_estado="{{ imovel.id_estado }}"
+                data-id_bairro="{{ imovel.id_bairro }}"
+                data-preco="{{ imovel.preco }}"
+                data-id_tipo="{{ imovel.id_tipo }}"
+                data-quartos="{{ imovel.quartos }}"
+                data-banheiros="{{ imovel.banheiros }}"
+                data-suites="{{ imovel.suites }}"
+                data-vagas_garagem="{{ imovel.vagas_garagem }}"
+                data-area="{{ imovel.area }}"
+                data-foto="{{ imovel.foto }}"
+                data-modalidade="{{ imovel.modalidade }}"
+              >
+                Editar
+              </button>
+              <button
+                class="btn btn-primary btn-sm"
+                data-toggle="modal"
+                data-target="#imageModal"
+                data-id="{{ imovel.id }}"
+              >
+                Gerenciar Imagens
+              </button>
+              <button
+                class="btn btn-danger btn-sm"
+                data-toggle="modal"
+                data-target="#excluirImovelModal"
+                data-id="{{ imovel.id }}"
+              >
+                Excluir
+              </button>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>
 
 <!-- Modal Adicionar Imovel -->
-<div class="modal fade" id="addImovelModal" tabindex="-1" role="dialog" aria-labelledby="addImovelModalLabel" aria-hidden="true">
+<div
+  class="modal fade"
+  id="addImovelModal"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="addImovelModalLabel"
+  aria-hidden="true"
+>
   <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content">
-          <div class="modal-header">
-              <h5 class="modal-title" id="addImovelModalLabel">Adicionar Imovel</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
-                  <span aria-hidden="true">&times;</span>
-              </button>
-          </div>
-          <div class="modal-body">
-              <form id="addImovelForm" onsubmit="event.preventDefault(); adicionarImovel(event);">
-                <div class="form-group">
-                    <label for="tituloImovelAdd" class="col-form-label">Título:</label>
-                    <input type="text" class="form-control" id="tituloImovelAdd" required>
-                  </div>
-                  <div class="form-group">
-                    <label for="descricaoImovelAdd" class="col-form-label">Descrição:</label>
-                    <textarea class="form-control" id="descricaoImovelAdd" required></textarea>
-                  </div>
-                  <div class="form-group">
-                    <label for="enderecoImovelAdd" class="col-form-label">Endereço:</label>
-                    <input type="text" class="form-control" id="enderecoImovelAdd" required>
-                  </div>
-                  <div class="form-group">
-                      <label for="estadoImovelAdd" class="col-form-label">Estado:</label>
-                      <select class="form-control" id="estadoImovelAdd" onchange="loadCidades('cidadeImovelAdd', this.value);" required>
-                        <!-- Opções de estados serão carregadas dinamicamente -->
-                      </select>
-                    </div>
-                    <div class="form-group">
-                      <label for="cidadeImovelAdd" class="col-form-label">Cidade:</label>
-                      <select class="form-control" id="cidadeImovelAdd" onchange="loadBairros('bairroImovelAdd', this.value);" required>
-                        <!-- Opções de cidades serão carregadas dinamicamente -->
-                      </select>
-                    </div>
-                    <div class="form-group">
-                      <label for="bairroImovelAdd" class="col-form-label">Bairro:</label>
-                      <select class="form-control" id="bairroImovelAdd" required>
-                        <!-- Opções de bairros serão carregadas dinamicamente -->
-                      </select>
-                    </div>
-                  <div class="form-group">
-                    <label for="precoImovelAdd" class="col-form-label">Preço:</label>
-                    <input type="number" class="form-control" id="precoImovelAdd" required>
-                  </div>
-                  <div class="form-group">
-                    <label for="idTipoImovelAdd" class="col-form-label">Tipo:</label>
-                    <input type="number" class="form-control" id="idTipoImovelAdd" required>
-                  </div>
-                  <div class="form-group">
-                    <label for="quartosImovelAdd" class="col-form-label">Quartos:</label>
-                    <input type="number" class="form-control" id="quartosImovelAdd" required>
-                  </div>
-                  <div class="form-group">
-                    <label for="banheirosImovelAdd" class="col-form-label">Banheiros:</label>
-                    <input type="number" class="form-control" id="banheirosImovelAdd" required>
-                  </div>
-                  <div class="form-group">
-                    <label for="suitesImovelAdd" class="col-form-label">Suítes:</label>
-                    <input type="number" class="form-control" id="suitesImovelAdd" required>
-                  </div>
-                  <div class="form-group">
-                    <label for="vagasGaragemImovelAdd" class="col-form-label">Vagas de Garagem:</label>
-                    <input type="number" class="form-control" id="vagasGaragemImovelAdd" required>
-                  </div>
-                  <div class="form-group">
-                      <label for="areaImovelAdd" class="col-form-label">Área:</label>
-                      <input type="number" class="form-control" id="areaImovelAdd" required>
-                    </div>
-                    <div class="form-group">
-                      <label for="fotoImovelAdd" class="col-form-label">Foto:</label>
-                      <input type="text" class="form-control" id="fotoImovelAdd" required>
-                    </div>
-                    <div class="form-group">
-                      <label for="modalidadeImovelAdd" class="col-form-label">Modalidade:</label>
-                      <select class="form-control" id="modalidadeImovelAdd" required>
-                        <option value="aluguel">Aluguel</option>
-                        <option value="venda">Venda</option>
-                      </select>
-                    </div>
-                  <div class="modal-footer">
-                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                      <button type="submit" class="btn btn-primary">Salvar</button>
-                  </div>
-              </form>
-          </div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addImovelModalLabel">Adicionar Imovel</h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Fechar"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
       </div>
+      <div class="modal-body">
+        <form
+          id="addImovelForm"
+          onsubmit="event.preventDefault(); adicionarImovel(event);"
+        >
+          <div class="form-group">
+            <label for="tituloImovelAdd" class="col-form-label">Título:</label>
+            <input
+              type="text"
+              class="form-control"
+              id="tituloImovelAdd"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="descricaoImovelAdd" class="col-form-label"
+              >Descrição:</label
+            >
+            <textarea
+              class="form-control"
+              id="descricaoImovelAdd"
+              required
+            ></textarea>
+          </div>
+          <div class="form-group">
+            <label for="enderecoImovelAdd" class="col-form-label"
+              >Endereço:</label
+            >
+            <input
+              type="text"
+              class="form-control"
+              id="enderecoImovelAdd"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="estadoImovelAdd" class="col-form-label">Estado:</label>
+            <select
+              class="form-control"
+              id="estadoImovelAdd"
+              onchange="loadCidades('cidadeImovelAdd', this.value);"
+              required
+            >
+              <!-- Opções de estados serão carregadas dinamicamente -->
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="cidadeImovelAdd" class="col-form-label">Cidade:</label>
+            <select
+              class="form-control"
+              id="cidadeImovelAdd"
+              onchange="loadBairros('bairroImovelAdd', this.value);"
+              required
+            >
+              <!-- Opções de cidades serão carregadas dinamicamente -->
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="bairroImovelAdd" class="col-form-label">Bairro:</label>
+            <select class="form-control" id="bairroImovelAdd" required>
+              <!-- Opções de bairros serão carregadas dinamicamente -->
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="precoImovelAdd" class="col-form-label">Preço:</label>
+            <input
+              type="number"
+              class="form-control"
+              id="precoImovelAdd"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="idTipoImovelAdd" class="col-form-label">Tipo:</label>
+            <input
+              type="number"
+              class="form-control"
+              id="idTipoImovelAdd"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="quartosImovelAdd" class="col-form-label"
+              >Quartos:</label
+            >
+            <input
+              type="number"
+              class="form-control"
+              id="quartosImovelAdd"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="banheirosImovelAdd" class="col-form-label"
+              >Banheiros:</label
+            >
+            <input
+              type="number"
+              class="form-control"
+              id="banheirosImovelAdd"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="suitesImovelAdd" class="col-form-label">Suítes:</label>
+            <input
+              type="number"
+              class="form-control"
+              id="suitesImovelAdd"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="vagasGaragemImovelAdd" class="col-form-label"
+              >Vagas de Garagem:</label
+            >
+            <input
+              type="number"
+              class="form-control"
+              id="vagasGaragemImovelAdd"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="areaImovelAdd" class="col-form-label">Área:</label>
+            <input
+              type="number"
+              class="form-control"
+              id="areaImovelAdd"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="fotoImovelAdd" class="col-form-label">Foto:</label>
+            <input
+              type="text"
+              class="form-control"
+              id="fotoImovelAdd"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="modalidadeImovelAdd" class="col-form-label"
+              >Modalidade:</label
+            >
+            <select class="form-control" id="modalidadeImovelAdd" required>
+              <option value="aluguel">Aluguel</option>
+              <option value="venda">Venda</option>
+            </select>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-dismiss="modal"
+            >
+              Cancelar
+            </button>
+            <button type="submit" class="btn btn-primary">Salvar</button>
+          </div>
+        </form>
+      </div>
+    </div>
   </div>
 </div>
 <!-- Modal Editar Imovel -->
-<div class="modal fade" id="editarImovelModal" tabindex="-1" role="dialog" aria-labelledby="editarImovelModalLabel" aria-hidden="true">
+<div
+  class="modal fade"
+  id="editarImovelModal"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="editarImovelModalLabel"
+  aria-hidden="true"
+>
   <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content">
-          <div class="modal-header">
-              <h5 class="modal-title" id="editarImovelModalLabel">Editar Imovel</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
-                  <span aria-hidden="true">&times;</span>
-              </button>
-          </div>
-          <div class="modal-body">
-              <form id="editImovelForm" onsubmit="event.preventDefault(); editarImovel(event);">
-                  <input type="hidden" name="id">
-                  <div class="form-group">
-                    <label for="tituloImovelEdit" class="col-form-label">Título:</label>
-                    <input type="text" class="form-control" id="tituloImovelEdit" required>
-                  </div>
-                  <div class="form-group">
-                    <label for="descricaoImovelEdit" class="col-form-label">Descrição:</label>
-                    <textarea class="form-control" id="descricaoImovelEdit" required></textarea>
-                  </div>
-                  <div class="form-group">
-                    <label for="enderecoImovelEdit" class="col-form-label">Endereço:</label>
-                    <input type="text" class="form-control" id="enderecoImovelEdit" required>
-                  </div>
-                  <div class="form-group">
-                      <label for="estadoImovelEdit" class="col-form-label">Estado:</label>
-                      <select class="form-control" id="estadoImovelEdit" onchange="loadCidades('cidadeImovelEdit', this.value);" required>
-                        <!-- Opções de estados serão carregadas dinamicamente -->
-                      </select>
-                    </div>
-                    <div class="form-group">
-                      <label for="cidadeImovelEdit" class="col-form-label">Cidade:</label>
-                      <select class="form-control" id="cidadeImovelEdit" onchange="loadBairros('bairroImovelEdit', this.value);" required>
-                        <!-- Opções de cidades serão carregadas dinamicamente -->
-                      </select>
-                    </div>
-                    <div class="form-group">
-                      <label for="bairroImovelEdit" class="col-form-label">Bairro:</label>
-                      <select class="form-control" id="bairroImovelEdit" required>
-                        <!-- Opções de bairros serão carregadas dinamicamente -->
-                      </select>
-                    </div>
-                  <div class="form-group">
-                    <label for="precoImovelEdit" class="col-form-label">Preço:</label>
-                    <input type="number" class="form-control" id="precoImovelEdit" required>
-                  </div>
-                  <div class="form-group">
-                    <label for="idTipoImovelEdit" class="col-form-label">Tipo:</label>
-                    <input type="number" class="form-control" id="idTipoImovelEdit" required>
-                  </div>
-                  <div class="form-group">
-                    <label for="quartosImovelEdit" class="col-form-label">Quartos:</label>
-                    <input type="number" class="form-control" id="quartosImovelEdit" required>
-                  </div>
-                  <div class="form-group">
-                    <label for="banheirosImovelEdit" class="col-form-label">Banheiros:</label>
-                    <input type="number" class="form-control" id="banheirosImovelEdit" required>
-                  </div>
-                  <div class="form-group">
-                    <label for="suitesImovelEdit" class="col-form-label">Suítes:</label>
-                    <input type="number" class="form-control" id="suitesImovelEdit" required>
-                  </div>
-                  <div class="form-group">
-                    <label for="vagasGaragemImovelEdit" class="col-form-label">Vagas de Garagem:</label>
-                    <input type="number" class="form-control" id="vagasGaragemImovelEdit" required>
-                  </div>
-                  <div class="form-group">
-                      <label for="areaImovelEdit" class="col-form-label">Área:</label>
-                      <input type="number" class="form-control" id="areaImovelEdit" required>
-                    </div>
-                    <div class="form-group">
-                      <label for="fotoImovelEdit" class="col-form-label">Foto:</label>
-                      <input type="text" class="form-control" id="fotoImovelEdit" required>
-                    </div>
-                    <div class="form-group">
-                      <label for="modalidadeImovelEdit" class="col-form-label">Modalidade:</label>
-                      <select class="form-control" id="modalidadeImovelEdit" required>
-                        <option value="aluguel">Aluguel</option>
-                        <option value="venda">Venda</option>
-                      </select>
-                  </div>
-                  <div class="modal-footer">
-                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                      <button type="submit" class="btn btn-primary">Salvar</button>
-                  </div>
-              </form>
-          </div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editarImovelModalLabel">Editar Imovel</h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Fechar"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
       </div>
+      <div class="modal-body">
+        <form
+          id="editImovelForm"
+          onsubmit="event.preventDefault(); editarImovel(event);"
+        >
+          <input type="hidden" name="id" />
+          <div class="form-group">
+            <label for="tituloImovelEdit" class="col-form-label">Título:</label>
+            <input
+              type="text"
+              class="form-control"
+              id="tituloImovelEdit"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="descricaoImovelEdit" class="col-form-label"
+              >Descrição:</label
+            >
+            <textarea
+              class="form-control"
+              id="descricaoImovelEdit"
+              required
+            ></textarea>
+          </div>
+          <div class="form-group">
+            <label for="enderecoImovelEdit" class="col-form-label"
+              >Endereço:</label
+            >
+            <input
+              type="text"
+              class="form-control"
+              id="enderecoImovelEdit"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="estadoImovelEdit" class="col-form-label">Estado:</label>
+            <select
+              class="form-control"
+              id="estadoImovelEdit"
+              onchange="loadCidades('cidadeImovelEdit', this.value);"
+              required
+            >
+              <!-- Opções de estados serão carregadas dinamicamente -->
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="cidadeImovelEdit" class="col-form-label">Cidade:</label>
+            <select
+              class="form-control"
+              id="cidadeImovelEdit"
+              onchange="loadBairros('bairroImovelEdit', this.value);"
+              required
+            >
+              <!-- Opções de cidades serão carregadas dinamicamente -->
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="bairroImovelEdit" class="col-form-label">Bairro:</label>
+            <select class="form-control" id="bairroImovelEdit" required>
+              <!-- Opções de bairros serão carregadas dinamicamente -->
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="precoImovelEdit" class="col-form-label">Preço:</label>
+            <input
+              type="number"
+              class="form-control"
+              id="precoImovelEdit"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="idTipoImovelEdit" class="col-form-label">Tipo:</label>
+            <input
+              type="number"
+              class="form-control"
+              id="idTipoImovelEdit"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="quartosImovelEdit" class="col-form-label"
+              >Quartos:</label
+            >
+            <input
+              type="number"
+              class="form-control"
+              id="quartosImovelEdit"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="banheirosImovelEdit" class="col-form-label"
+              >Banheiros:</label
+            >
+            <input
+              type="number"
+              class="form-control"
+              id="banheirosImovelEdit"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="suitesImovelEdit" class="col-form-label">Suítes:</label>
+            <input
+              type="number"
+              class="form-control"
+              id="suitesImovelEdit"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="vagasGaragemImovelEdit" class="col-form-label"
+              >Vagas de Garagem:</label
+            >
+            <input
+              type="number"
+              class="form-control"
+              id="vagasGaragemImovelEdit"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="areaImovelEdit" class="col-form-label">Área:</label>
+            <input
+              type="number"
+              class="form-control"
+              id="areaImovelEdit"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="fotoImovelEdit" class="col-form-label">Foto:</label>
+            <input
+              type="text"
+              class="form-control"
+              id="fotoImovelEdit"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="modalidadeImovelEdit" class="col-form-label"
+              >Modalidade:</label
+            >
+            <select class="form-control" id="modalidadeImovelEdit" required>
+              <option value="aluguel">Aluguel</option>
+              <option value="venda">Venda</option>
+            </select>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-dismiss="modal"
+            >
+              Cancelar
+            </button>
+            <button type="submit" class="btn btn-primary">Salvar</button>
+          </div>
+        </form>
+      </div>
+    </div>
   </div>
 </div>
 
 <!-- Modal Excluir Imovel -->
-<div class="modal fade" id="excluirImovelModal" tabindex="-1" role="dialog" aria-labelledby="excluirImovelModalLabel" aria-hidden="true">
+<div
+  class="modal fade"
+  id="excluirImovelModal"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="excluirImovelModalLabel"
+  aria-hidden="true"
+>
   <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content">
-          <div class="modal-header">
-              <h5 class="modal-title" id="excluirImovelModalLabel">Excluir Imovel</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
-                  <span aria-hidden="true">&times;</span>
-              </button>
-          </div>
-          <div class="modal-body">
-              <p>Tem certeza que deseja excluir este imovel?</p>
-              <form id="deleteImovelForm" onsubmit="event.preventDefault(); excluirImovel(event);">
-                  <input type="hidden" name="id">
-                  <div class="modal-footer">
-                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                      <button type="submit" class="btn btn-danger">Excluir</button>
-                  </div>
-              </form>
-          </div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="excluirImovelModalLabel">Excluir Imovel</h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Fechar"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
       </div>
+      <div class="modal-body">
+        <p>Tem certeza que deseja excluir este imovel?</p>
+        <form
+          id="deleteImovelForm"
+          onsubmit="event.preventDefault(); excluirImovel(event);"
+        >
+          <input type="hidden" name="id" />
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-dismiss="modal"
+            >
+              Cancelar
+            </button>
+            <button type="submit" class="btn btn-danger">Excluir</button>
+          </div>
+        </form>
+      </div>
+    </div>
   </div>
 </div>
 
 <!-- Modal de Gerenciamento de Imagens -->
-<div class="modal fade" id="gerenciarImagensModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document"> <!-- Adicione a classe modal-lg para uma modal de tamanho grande -->
+<div
+  class="modal fade"
+  id="gerenciarImagensModal"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg" role="document">
+    <!-- Adicione a classe modal-lg para uma modal de tamanho grande -->
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">Gerenciar Imagens</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Fechar"
+        >
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
         <!-- Formulário para adicionar imagens -->
         <form onsubmit="adicionarImagem(event)">
-          <input type="hidden" name="id" id="idImovel" value="1001"> <!-- Substitua 1001 pelo valor real do idImovel -->
+          <input type="hidden" name="id" id="idImovel" value="1001" />
+          <!-- Substitua 1001 pelo valor real do idImovel -->
           <div class="form-group">
             <label for="novaImagem">URL da Nova Imagem:</label>
-            <input type="text" class="form-control" id="novaImagem" placeholder="URL da Imagem" required>
+            <input
+              type="text"
+              class="form-control"
+              id="novaImagem"
+              placeholder="URL da Imagem"
+              required
+            />
           </div>
-          <button type="submit" class="btn btn-primary">Adicionar Imagem</button>
+          <button type="submit" class="btn btn-primary">
+            Adicionar Imagem
+          </button>
         </form>
 
         <!-- Lista de imagens atuais -->
         <h4>Imagens Atuais:</h4>
-        <ul id="imagensAtuais" class="list-unstyled"> <!-- Adicione a classe list-unstyled para remover estilos padrão de lista -->
+        <ul id="imagensAtuais" class="list-unstyled">
+          <!-- Adicione a classe list-unstyled para remover estilos padrão de lista -->
           <!-- As imagens atuais serão adicionadas dinamicamente aqui -->
         </ul>
       </div>
@@ -287,404 +565,411 @@
   </div>
 </div>
 <script>
-  const jwtToken = '{{ access_token }}';
+  const jwtToken = "{{ access_token }}";
 
   async function fetchTiposImoveis() {
-  return new Promise((resolve, reject) => {
-    $.get(baseURL + "admin/tipos-imoveis", (data) => {
-      resolve(data);
-    }).fail((error) => {
-      console.error("Erro ao carregar tipos:", error);
-      reject(error);
+    return new Promise((resolve, reject) => {
+      $.get(baseURL + "admin/tipos-imoveis", (data) => {
+        resolve(data);
+      }).fail((error) => {
+        console.error("Erro ao carregar tipos:", error);
+        reject(error);
+      });
     });
-  });
-}
+  }
 
-async function loadTiposImoveis(selectId) {
-  const tiposimoveis = await fetchTiposImoveis();
-  const select = document.getElementById(selectId);
-  select.innerHTML = '<option value="">Selecione um tipo de imovel</option>';
-  estados.forEach((tipoimovel) => {
-    const option = document.createElement('option');
-    option.value = tipoimovel.id;
-    option.textContent = tipoimovel.nome;
-    select.appendChild(option);
-  });
-}
+  async function loadTiposImoveis(selectId) {
+    const tiposimoveis = await fetchTiposImoveis();
+    const select = document.getElementById(selectId);
+    select.innerHTML = '<option value="">Selecione um tipo de imovel</option>';
+    estados.forEach((tipoimovel) => {
+      const option = document.createElement("option");
+      option.value = tipoimovel.id;
+      option.textContent = tipoimovel.nome;
+      select.appendChild(option);
+    });
+  }
 
   async function fetchEstados() {
-  return new Promise((resolve, reject) => {
-    $.get(baseURL + "localizacao/estados", (data) => {
-      resolve(data);
-    }).fail((error) => {
-      console.error("Erro ao carregar estados:", error);
-      reject(error);
-    });
-  });
-}
-
-async function fetchCidades(estadoId) {
-  return new Promise((resolve, reject) => {
-    $.get(baseURL + "localizacao/cidades" , {id_estado: estadoId}, (data) => {
-      resolve(data);
-    }).fail((error) => {
-      console.error("Erro ao carregar cidades:", error);
-      reject(error);
-    });
-  });
-}
-
-async function fetchBairros(cidadeId) {
-  return new Promise((resolve, reject) => {
-    $.get(baseURL + "localizacao/bairros", {id_cidade: cidadeId}, (data) => {
-      resolve(data);
-    }).fail((error) => {
-      console.error("Erro ao carregar bairros:", error);
-      reject(error);
-    });
-  });
-}
-
-async function loadEstados(selectId) {
-  const estados = await fetchEstados();
-  const select = document.getElementById(selectId);
-  select.innerHTML = '<option value="">Selecione um estado</option>';
-  estados.forEach((estado) => {
-    const option = document.createElement('option');
-    option.value = estado.id;
-    option.textContent = estado.nome;
-    select.appendChild(option);
-  });
-}
-
-async function loadCidades(selectId, estadoId) {
-  if (!estadoId) return;
-  const cidades = await fetchCidades(estadoId);
-  const select = document.getElementById(selectId);
-  select.innerHTML = '<option value="">Selecione uma cidade</option>';
-  cidades.forEach((cidade) => {
-    const option = document.createElement('option');
-    option.value = cidade.id;
-    option.textContent = cidade.nome;
-    select.appendChild(option);
-  });
-  $('#bairroImovelAdd').html('<option value="">Selecione um bairro</option>');
-}
-
-async function loadBairros(selectId, cidadeId) {
-  if (!cidadeId) return;
-  const bairros = await fetchBairros(cidadeId);
-  const select = document.getElementById(selectId);
-  select.innerHTML = '<option value="">Selecione um bairro</option>';
-  bairros.forEach((bairro) => {
-    const option = document.createElement('option');
-    option.value = bairro.id;
-    option.textContent = bairro.nome;
-    select.appendChild(option);
-  });
-}
-
-  
-  function adicionarImovel(event) {
-      const form = event.target;
-      const formData = new FormData(form);
-      const titulo = form.querySelector('#tituloImovelAdd').value;
-      const descricao = form.querySelector('#descricaoImovelAdd').value;
-      const endereco = form.querySelector('#enderecoImovelAdd').value;
-      const idCidade = form.querySelector('#cidadeImovelAdd').value;
-      const idEstado = form.querySelector('#estadoImovelAdd').value;
-      const idBairro = form.querySelector('#bairroImovelAdd').value;
-      const preco = form.querySelector('#precoImovelAdd').value;
-      const idTipo = form.querySelector('#idTipoImovelAdd').value;
-      const quartos = form.querySelector('#quartosImovelAdd').value;
-      const banheiros = form.querySelector('#banheirosImovelAdd').value;
-      const suites = form.querySelector('#suitesImovelAdd').value;
-      const vagasGaragem = form.querySelector('#vagasGaragemImovelAdd').value;
-      const area = form.querySelector('#areaImovelAdd').value;
-      const foto = form.querySelector('#fotoImovelAdd').value;
-      const modalidade = form.querySelector('#modalidadeImovelAdd').value;
-
-      const addImovel = {
-        titulo,
-        descricao,
-        endereco,
-        id_cidade: parseInt(idCidade),
-        id_estado: parseInt(idEstado),
-        id_bairro: parseInt(idBairro),
-        preco: parseFloat(preco),
-        id_tipo: parseInt(idTipo),
-        quartos: parseInt(quartos),
-        banheiros: parseInt(banheiros),
-        suites: parseInt(suites),
-        vagas_garagem: parseInt(vagasGaragem),
-        area: parseInt(area),
-        foto,
-        modalidade,
-      };
-      
-      fetch(baseURL+'imoveis', {
-          method: 'POST',
-          body: JSON.stringify(addImovel),
-          headers: {
-              'Authorization': `Bearer ${jwtToken}`,
-              'Content-Type': 'application/json',
-          },
-      })
-      .then((response) => {
-          if (response.status === 201) {
-              location.reload();
-          } else {
-              alert('Não foi possível adicionar o imovel');
-          }
+    return new Promise((resolve, reject) => {
+      $.get(baseURL + "localizacao/estados", (data) => {
+        resolve(data);
+      }).fail((error) => {
+        console.error("Erro ao carregar estados:", error);
+        reject(error);
       });
+    });
+  }
+
+  async function fetchCidades(estadoId) {
+    return new Promise((resolve, reject) => {
+      $.get(
+        baseURL + "localizacao/cidades",
+        { id_estado: estadoId },
+        (data) => {
+          resolve(data);
+        }
+      ).fail((error) => {
+        console.error("Erro ao carregar cidades:", error);
+        reject(error);
+      });
+    });
+  }
+
+  async function fetchBairros(cidadeId) {
+    return new Promise((resolve, reject) => {
+      $.get(
+        baseURL + "localizacao/bairros",
+        { id_cidade: cidadeId },
+        (data) => {
+          resolve(data);
+        }
+      ).fail((error) => {
+        console.error("Erro ao carregar bairros:", error);
+        reject(error);
+      });
+    });
+  }
+
+  async function loadEstados(selectId) {
+    const estados = await fetchEstados();
+    const select = document.getElementById(selectId);
+    select.innerHTML = '<option value="">Selecione um estado</option>';
+    estados.forEach((estado) => {
+      const option = document.createElement("option");
+      option.value = estado.id;
+      option.textContent = estado.nome;
+      select.appendChild(option);
+    });
+  }
+
+  async function loadCidades(selectId, estadoId) {
+    if (!estadoId) return;
+    const cidades = await fetchCidades(estadoId);
+    const select = document.getElementById(selectId);
+    select.innerHTML = '<option value="">Selecione uma cidade</option>';
+    cidades.forEach((cidade) => {
+      const option = document.createElement("option");
+      option.value = cidade.id;
+      option.textContent = cidade.nome;
+      select.appendChild(option);
+    });
+    $("#bairroImovelAdd").html('<option value="">Selecione um bairro</option>');
+  }
+
+  async function loadBairros(selectId, cidadeId) {
+    if (!cidadeId) return;
+    const bairros = await fetchBairros(cidadeId);
+    const select = document.getElementById(selectId);
+    select.innerHTML = '<option value="">Selecione um bairro</option>';
+    bairros.forEach((bairro) => {
+      const option = document.createElement("option");
+      option.value = bairro.id;
+      option.textContent = bairro.nome;
+      select.appendChild(option);
+    });
+  }
+
+  function adicionarImovel(event) {
+    const form = event.target;
+    const formData = new FormData(form);
+    const titulo = form.querySelector("#tituloImovelAdd").value;
+    const descricao = form.querySelector("#descricaoImovelAdd").value;
+    const endereco = form.querySelector("#enderecoImovelAdd").value;
+    const idCidade = form.querySelector("#cidadeImovelAdd").value;
+    const idEstado = form.querySelector("#estadoImovelAdd").value;
+    const idBairro = form.querySelector("#bairroImovelAdd").value;
+    const preco = form.querySelector("#precoImovelAdd").value;
+    const idTipo = form.querySelector("#idTipoImovelAdd").value;
+    const quartos = form.querySelector("#quartosImovelAdd").value;
+    const banheiros = form.querySelector("#banheirosImovelAdd").value;
+    const suites = form.querySelector("#suitesImovelAdd").value;
+    const vagasGaragem = form.querySelector("#vagasGaragemImovelAdd").value;
+    const area = form.querySelector("#areaImovelAdd").value;
+    const foto = form.querySelector("#fotoImovelAdd").value;
+    const modalidade = form.querySelector("#modalidadeImovelAdd").value;
+    const usuario = "{{ user_id }}";
+
+    const addImovel = {
+      titulo,
+      descricao,
+      endereco,
+      id_cidade: parseInt(idCidade),
+      id_estado: parseInt(idEstado),
+      id_bairro: parseInt(idBairro),
+      preco: parseFloat(preco),
+      id_tipo: parseInt(idTipo),
+      quartos: parseInt(quartos),
+      banheiros: parseInt(banheiros),
+      suites: parseInt(suites),
+      vagas_garagem: parseInt(vagasGaragem),
+      area: parseInt(area),
+      foto,
+      modalidade,
+      usuario,
+    };
+
+    fetch(baseURL + "imoveis", {
+      method: "POST",
+      body: JSON.stringify(addImovel),
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+        "Content-Type": "application/json",
+      },
+    }).then((response) => {
+      if (response.status === 201) {
+        location.reload();
+      } else {
+        alert("Não foi possível adicionar o imovel");
+      }
+    });
   }
 
   function editarImovel() {
-    const form = document.getElementById('editImovelForm');
+    const form = document.getElementById("editImovelForm");
     const idField = form.querySelector('input[name="id"]');
     const id = idField.value;
-    const titulo = form.querySelector('#tituloImovelEdit').value;
-    const descricao = form.querySelector('#descricaoImovelEdit').value;
-      const endereco = form.querySelector('#enderecoImovelEdit').value;
-      const idCidade = form.querySelector('#idCidadeImovelEdit').value;
-      const idEstado = form.querySelector('#idEstadoImovelEdit').value;
-      const idBairro = form.querySelector('#idBairroImovelEdit').value;
-      const preco = form.querySelector('#precoImovelEdit').value;
-      const idTipo = form.querySelector('#idTipoImovelEdit').value;
-      const quartos = form.querySelector('#quartosImovelEdit').value;
-      const banheiros = form.querySelector('#banheirosImovelEdit').value;
-      const suites = form.querySelector('#suitesImovelEdit').value;
-      const vagasGaragem = form.querySelector('#vagasGaragemImovelEdit').value;
-      const area = form.querySelector('#areaImovelEdit').value;
-      const foto = form.querySelector('#fotoImovelEdit').value;
-      const modalidade = form.querySelector('#modalidadeImovelEdit').value;
+    const titulo = form.querySelector("#tituloImovelEdit").value;
+    const descricao = form.querySelector("#descricaoImovelEdit").value;
+    const endereco = form.querySelector("#enderecoImovelEdit").value;
+    const idCidade = form.querySelector("#idCidadeImovelEdit").value;
+    const idEstado = form.querySelector("#idEstadoImovelEdit").value;
+    const idBairro = form.querySelector("#idBairroImovelEdit").value;
+    const preco = form.querySelector("#precoImovelEdit").value;
+    const idTipo = form.querySelector("#idTipoImovelEdit").value;
+    const quartos = form.querySelector("#quartosImovelEdit").value;
+    const banheiros = form.querySelector("#banheirosImovelEdit").value;
+    const suites = form.querySelector("#suitesImovelEdit").value;
+    const vagasGaragem = form.querySelector("#vagasGaragemImovelEdit").value;
+    const area = form.querySelector("#areaImovelEdit").value;
+    const foto = form.querySelector("#fotoImovelEdit").value;
+    const modalidade = form.querySelector("#modalidadeImovelEdit").value;
+    const usuario = "{{ user_id }}";
+    console.log(idBairro);
 
     const updatedImovel = {
-        titulo,
-        descricao,
-        endereco,
-        id_cidade: parseInt(idCidade),
-        id_estado: parseInt(idEstado),
-        id_bairro: parseInt(idBairro),
-        preco: parseFloat(preco),
-        id_tipo: parseInt(idTipo),
-        quartos: parseInt(quartos),
-        banheiros: parseInt(banheiros),
-        suites: parseInt(suites),
-        vagas_garagem: parseInt(vagasGaragem),
-        area: parseInt(area),
-        foto,
-        modalidade,
+      titulo,
+      descricao,
+      endereco,
+      id_cidade: parseInt(idCidade),
+      id_estado: parseInt(idEstado),
+      id_bairro: parseInt(idBairro),
+      preco: parseFloat(preco),
+      id_tipo: parseInt(idTipo),
+      quartos: parseInt(quartos),
+      banheiros: parseInt(banheiros),
+      suites: parseInt(suites),
+      vagas_garagem: parseInt(vagasGaragem),
+      area: parseInt(area),
+      foto,
+      modalidade,
+      //usuario,
     };
 
-    fetch(baseURL+`imoveis/${id}`, {
-      method: 'PUT',
+    fetch(baseURL + `imoveis/${id}`, {
+      method: "PUT",
       body: JSON.stringify(updatedImovel),
       headers: {
-        'Authorization': `Bearer ${jwtToken}`,
-        'Content-Type': 'application/json',
+        Authorization: `Bearer ${jwtToken}`,
+        "Content-Type": "application/json",
       },
-    })
-    .then((response) => {
+    }).then((response) => {
       if (response.status === 200) {
         location.reload();
       } else {
-        alert('Não foi possível editar o imovel');
+        alert("Não foi possível editar o imovel");
       }
     });
   }
 
   function excluirImovel(event) {
-      const form = event.target;
-      const formData = new FormData(form);
-      const id = formData.get('id');
+    const form = event.target;
+    const formData = new FormData(form);
+    const id = formData.get("id");
 
-      fetch(baseURL+`imoveis/${id}`, {
-          method: 'DELETE',
-          headers: {
-              'Authorization': `Bearer ${jwtToken}`,
-              'Content-Type': 'application/json',
-          },
-          })
-      .then((response) => {
-          if (response.status === 204) {
-          location.reload();
-          } else {
-          alert('Não foi possível excluir o imovel');
-          }
-      });
+    fetch(baseURL + `imoveis/${id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+        "Content-Type": "application/json",
+      },
+    }).then((response) => {
+      if (response.status === 204) {
+        location.reload();
+      } else {
+        alert("Não foi possível excluir o imovel");
       }
-      async function buscarImovel(event) {
-          if (event) {
-              event.preventDefault();
-          }
-          //const searchForm = document.querySelector('form input[type="search"]').form;
-          //const searchTerm = searchForm.querySelector('input[type="search"]').value;
-      
-          //fetch(`http://localhost:5000/api/v1/Imovel?search=${encodeURIComponent(searchTerm)}`, {
-          fetch(baseURL+'imoveis', {
-          headers: {
-              'Authorization': `Bearer ${jwtToken}`,
-              'Content-Type': 'application/json',
-          },
-        })
-          .then((response) => response.json())
-          .then((imoveis) => {
-              const tbody = document.querySelector('table tbody');
-              tbody.innerHTML = '';
-          
-              imoveis.forEach((imovel) => {
-                  const tr = document.createElement('tr');
-              
-                  const tdId = document.createElement('td');
-                  tdId.textContent = imovel.id;
-                  tr.appendChild(tdId);
-              
-                  const tdTitulo = document.createElement('td');
-                  tdTitulo.textContent = imovel.titulo;
-                  tr.appendChild(tdTitulo);
-              
-                  const tdPreco = document.createElement('td');
-                  tdPreco.textContent = imovel.preco;
-                  tr.appendChild(tdPreco);
+    });
+  }
+  async function buscarImovel(event) {
+    if (event) {
+      event.preventDefault();
+    }
+    //const searchForm = document.querySelector('form input[type="search"]').form;
+    //const searchTerm = searchForm.querySelector('input[type="search"]').value;
 
-                  const tdModalidade = document.createElement('td');
-                  tdModalidade.textContent = imovel.modalidade;
-                  tr.appendChild(tdModalidade);
-              
-             
-                  const tdAcoes = document.createElement('td');
-                  tdAcoes.innerHTML = `
-                      <button class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#editarImovelModal" data-id="${ imovel.id }" data-titulo="${ imovel.titulo }" data-descricao="${ imovel.descricao }" data-endereco="${ imovel.endereco }" data-id_cidade="${ imovel.id_cidade }" data-id_estado="${ imovel.id_estado }" data-id_bairro="${ imovel.id_bairro }" data-preco="${ imovel.preco }" data-id_tipo="${ imovel.id_tipo }" data-quartos="${ imovel.quartos }" data-banheiros="${ imovel.banheiros }" data-suites="${ imovel.suites }" data-vagas_garagem="${ imovel.vagas_garagem }" data-area="${ imovel.area }" data-foto="${ imovel.foto }" data-modalidade="${ imovel.modalidade }">Editar</button>
-                      <button class="btn btn-primary btn-sm" data-toggle="modal" onclick="carregarImagensAtuais(${ imovel.id })" data-target="#gerenciarImagensModal" data-id="${ imovel.id }">Gerenciar Imagens</button>
-                      <button class="btn btn-danger btn-sm" data-toggle="modal" data-target="#excluirImovelModal" data-id="${ imovel.id }">Excluir</button>
+    //fetch(`http://localhost:5000/api/v1/Imovel?search=${encodeURIComponent(searchTerm)}`, {
+    fetch(baseURL + "imoveis", {
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((imoveis) => {
+        const tbody = document.querySelector("table tbody");
+        tbody.innerHTML = "";
+
+        imoveis.forEach((imovel) => {
+          const tr = document.createElement("tr");
+
+          const tdId = document.createElement("td");
+          tdId.textContent = imovel.id;
+          tr.appendChild(tdId);
+
+          const tdTitulo = document.createElement("td");
+          tdTitulo.textContent = imovel.titulo;
+          tr.appendChild(tdTitulo);
+
+          const tdPreco = document.createElement("td");
+          tdPreco.textContent = imovel.preco;
+          tr.appendChild(tdPreco);
+
+          const tdModalidade = document.createElement("td");
+          tdModalidade.textContent = imovel.modalidade;
+          tr.appendChild(tdModalidade);
+
+          const tdAcoes = document.createElement("td");
+          tdAcoes.innerHTML = `
+                      <button class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#editarImovelModal" data-id="${imovel.id}" data-titulo="${imovel.titulo}" data-descricao="${imovel.descricao}" data-endereco="${imovel.endereco}" data-id_cidade="${imovel.id_cidade}" data-id_estado="${imovel.id_estado}" data-id_bairro="${imovel.id_bairro}" data-preco="${imovel.preco}" data-id_tipo="${imovel.id_tipo}" data-quartos="${imovel.quartos}" data-banheiros="${imovel.banheiros}" data-suites="${imovel.suites}" data-vagas_garagem="${imovel.vagas_garagem}" data-area="${imovel.area}" data-foto="${imovel.foto}" data-modalidade="${imovel.modalidade}">Editar</button>
+                      <button class="btn btn-primary btn-sm" data-toggle="modal" onclick="carregarImagensAtuais(${imovel.id})" data-target="#gerenciarImagensModal" data-id="${imovel.id}">Gerenciar Imagens</button>
+                      <button class="btn btn-danger btn-sm" data-toggle="modal" data-target="#excluirImovelModal" data-id="${imovel.id}">Excluir</button>
                   `;
-                  tr.appendChild(tdAcoes);
-              
-                  tbody.appendChild(tr);
-              });
+          tr.appendChild(tdAcoes);
+
+          tbody.appendChild(tr);
+        });
+      });
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    loadEstados("estadoImovelAdd");
+    buscarImovel(null);
+    $(document).ready(function () {
+      $("#editarImovelModal").on("show.bs.modal", function (event) {
+        var button = $(event.relatedTarget); // Botão que acionou o modal
+        var id = button.data("id"); // Extrai o atributo data-id
+        var titulo = button.data("titulo");
+        var descricao = button.data("descricao");
+        var endereco = button.data("endereco");
+        var idCidade = button.data("id_cidade");
+        var idEstado = button.data("id_estado");
+        var idBairro = button.data("id_bairro");
+        var preco = button.data("preco");
+        var idTipo = button.data("id_tipo");
+        var quartos = button.data("quartos");
+        var banheiros = button.data("banheiros");
+        var suites = button.data("suites");
+        var vagasGaragem = button.data("vagas_garagem");
+        var area = button.data("area");
+        var foto = button.data("foto");
+        var modalidade = button.data("modalidade");
+
+        var modal = $(this);
+        modal.find('input[name="id"]').val(id);
+        modal.find("#tituloImovelEdit").val(titulo);
+        modal.find("#descricaoImovelEdit").val(descricao);
+        modal.find("#enderecoImovelEdit").val(endereco);
+        modal.find("#idCidadeImovelEdit").val(idCidade);
+        modal.find("#idEstadoImovelEdit").val(idEstado);
+        modal.find("#idBairroImovelEdit").val(idBairro);
+        modal.find("#precoImovelEdit").val(preco);
+        modal.find("#idTipoImovelEdit").val(idTipo);
+        modal.find("#quartosImovelEdit").val(quartos);
+        modal.find("#banheirosImovelEdit").val(banheiros);
+        modal.find("#suitesImovelEdit").val(suites);
+        modal.find("#vagasGaragemImovelEdit").val(vagasGaragem);
+        modal.find("#areaImovelEdit").val(area);
+        modal.find("#fotoImovelEdit").val(foto);
+        modal.find("#modalidadeImovelEdit").val(modalidade);
+        loadEstados("estadoImovelEdit")
+          .then(() => {
+            document.getElementById("estadoImovelEdit").value = idEstado;
+            return loadCidades("cidadeImovelEdit", idEstado);
+          })
+          .then(() => {
+            document.getElementById("cidadeImovelEdit").value = idCidade;
+            return loadBairros("bairroImovelEdit", idCidade);
+          })
+          .then(() => {
+            document.getElementById("bairroImovelEdit").value = idBairro;
           });
-      }
+      });
 
-      document.addEventListener('DOMContentLoaded', function() {
-          loadEstados('estadoImovelAdd');
-          buscarImovel(null); 
-          $(document).ready(function () {
-            $('#editarImovelModal').on('show.bs.modal', function (event) {
-    var button = $(event.relatedTarget); // Botão que acionou o modal
-    var id = button.data('id'); // Extrai o atributo data-id
-    var titulo = button.data('titulo');
-    var descricao = button.data('descricao');
-    var endereco = button.data('endereco');
-    var idCidade = button.data('id_cidade');
-    var idEstado = button.data('id_estado');
-    var idBairro = button.data('id_bairro');
-    var preco = button.data('preco');
-    var idTipo = button.data('id_tipo');
-    var quartos = button.data('quartos');
-    var banheiros = button.data('banheiros');
-    var suites = button.data('suites');
-    var vagasGaragem = button.data('vagas_garagem');
-    var area = button.data('area');
-    var foto = button.data('foto');
-    var modalidade = button.data('modalidade');
+      $("#excluirImovelModal").on("show.bs.modal", function (event) {
+        var button = $(event.relatedTarget); // Botão que acionou o modal
+        var id = button.data("id"); // Extrai o atributo data-id
 
-    var modal = $(this);
-    modal.find('input[name="id"]').val(id);
-    modal.find('#tituloImovelEdit').val(titulo);
-    modal.find('#descricaoImovelEdit').val(descricao);
-    modal.find('#enderecoImovelEdit').val(endereco);
-    modal.find('#idCidadeImovelEdit').val(idCidade);
-    modal.find('#idEstadoImovelEdit').val(idEstado);
-    modal.find('#idBairroImovelEdit').val(idBairro);
-    modal.find('#precoImovelEdit').val(preco);
-    modal.find('#idTipoImovelEdit').val(idTipo);
-    modal.find('#quartosImovelEdit').val(quartos);
-    modal.find('#banheirosImovelEdit').val(banheiros);
-    modal.find('#suitesImovelEdit').val(suites);
-    modal.find('#vagasGaragemImovelEdit').val(vagasGaragem);
-    modal.find('#areaImovelEdit').val(area);
-    modal.find('#fotoImovelEdit').val(foto);
-    modal.find('#modalidadeImovelEdit').val(modalidade);
-    loadEstados('estadoImovelEdit').then(() => {
-    document.getElementById('estadoImovelEdit').value = idEstado;
-    return loadCidades('cidadeImovelEdit', idEstado);
-  }).then(() => {
-    document.getElementById('cidadeImovelEdit').value = idCidade;
-    return loadBairros('bairroImovelEdit', idCidade);
-  }).then(() => {
-    document.getElementById('bairroImovelEdit').value = idBairro;
+        var modal = $(this);
+        modal.find('input[name="id"]').val(id);
+      });
+    });
   });
- });
 
-  $('#excluirImovelModal').on('show.bs.modal', function (event) {
+  $("#gerenciarImagensModal").on("show.bs.modal", function (event) {
     var button = $(event.relatedTarget); // Botão que acionou o modal
-    var id = button.data('id'); // Extrai o atributo data-id
-
+    var id = button.data("id"); // Extrai o atributo data-id
 
     var modal = $(this);
     modal.find('input[name="id"]').val(id);
   });
-});
-});
 
-$('#gerenciarImagensModal').on('show.bs.modal', function (event) {
-  var button = $(event.relatedTarget); // Botão que acionou o modal
-    var id = button.data('id'); // Extrai o atributo data-id
+  // Função para adicionar uma imagem
+  function adicionarImagem(event) {
+    event.preventDefault();
+    const form = event.target;
+    const formData = new FormData(form);
+    const idImovel = formData.get("id");
 
+    const novaImagem = form.querySelector("#novaImagem").value;
 
-    var modal = $(this);
-    modal.find('input[name="id"]').val(id);
-});
+    const novaFotoImovel = {
+      foto: novaImagem,
+    };
 
-// Função para adicionar uma imagem
-function adicionarImagem(event) {
-  event.preventDefault();
-  const form = event.target;
-  const formData = new FormData(form);
-  const idImovel = formData.get('id');
-
-  const novaImagem = form.querySelector('#novaImagem').value;
-
-  const novaFotoImovel = {
-    foto: novaImagem,
-  };
-
-  fetch(baseURL+`imoveis/${idImovel}/fotosimovel`, {
-    method: 'POST',
-    body: JSON.stringify(novaFotoImovel),
-    headers: {
-      'Authorization': `Bearer ${jwtToken}`,
-      'Content-Type': 'application/json',
-    },
-  })
-    .then((response) => {
+    fetch(baseURL + `imoveis/${idImovel}/fotosimovel`, {
+      method: "POST",
+      body: JSON.stringify(novaFotoImovel),
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+        "Content-Type": "application/json",
+      },
+    }).then((response) => {
       if (response.status === 201) {
         // A imagem foi adicionada com sucesso, você pode atualizar a lista de imagens atuais aqui.
         // Lembre-se de adicionar a nova imagem à lista "imagensAtuais".
         // Exemplo:
-        const imagensAtuais = document.querySelector('#imagensAtuais');
-        const novaImagemItem = document.createElement('li');
+        const imagensAtuais = document.querySelector("#imagensAtuais");
+        const novaImagemItem = document.createElement("li");
         novaImagemItem.textContent = novaImagem;
         imagensAtuais.appendChild(novaImagemItem);
 
         form.reset(); // Limpa o campo de entrada de nova imagem
-        $('#gerenciarImagensModal').modal('hide'); // Fecha o modal após a adição
+        $("#gerenciarImagensModal").modal("hide"); // Fecha o modal após a adição
       } else {
-        alert('Não foi possível adicionar a imagem.');
+        alert("Não foi possível adicionar a imagem.");
       }
     });
-}
+  }
 
-// Função para excluir uma imagem
-function excluirImagem(idImovel, imageId) {
-  fetch(baseURL+`imoveis/${idImovel}/fotosimovel/${imageId}`, {
-    method: 'DELETE',
-    headers: {
-      'Authorization': `Bearer ${jwtToken}`,
-    },
-  })
-    .then((response) => {
+  // Função para excluir uma imagem
+  function excluirImagem(idImovel, imageId) {
+    fetch(baseURL + `imoveis/${idImovel}/fotosimovel/${imageId}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+      },
+    }).then((response) => {
       if (response.status === 204) {
         // A imagem foi excluída com sucesso, você pode remover a entrada da lista no modal
         const imagemParaExcluir = document.querySelector(`#imagem-${imageId}`);
@@ -692,48 +977,47 @@ function excluirImagem(idImovel, imageId) {
           imagemParaExcluir.remove();
         }
       } else {
-        alert('Não foi possível excluir a imagem.');
+        alert("Não foi possível excluir a imagem.");
       }
     });
-}
+  }
 
-// Função para carregar imagens atuais da API
-function carregarImagensAtuais(idImovel) {
-  fetch(baseURL+`imoveis/${idImovel}/fotosimovel`, {
-    method: 'GET',
-    headers: {
-      'Authorization': `Bearer ${jwtToken}`,
-    },
-  })
-    .then((response) => {
-      if (response.status === 200) {
-        return response.json(); // Converte a resposta em JSON
-      } else {
-        alert('Não foi possível carregar as imagens atuais.');
-        throw new Error('Erro ao carregar imagens atuais');
-      }
+  // Função para carregar imagens atuais da API
+  function carregarImagensAtuais(idImovel) {
+    fetch(baseURL + `imoveis/${idImovel}/fotosimovel`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+      },
     })
-    .then((data) => {
-      // Limpa a lista de imagens atuais
-      const imagensAtuais = document.querySelector('#imagensAtuais');
-      imagensAtuais.innerHTML = '';
+      .then((response) => {
+        if (response.status === 200) {
+          return response.json(); // Converte a resposta em JSON
+        } else {
+          alert("Não foi possível carregar as imagens atuais.");
+          throw new Error("Erro ao carregar imagens atuais");
+        }
+      })
+      .then((data) => {
+        // Limpa a lista de imagens atuais
+        const imagensAtuais = document.querySelector("#imagensAtuais");
+        imagensAtuais.innerHTML = "";
 
-      // Adiciona as imagens atuais à lista
-      data.forEach((imagem) => {
-        const imagemItem = document.createElement('li');
-        imagemItem.id = `imagem-${imagem.id}`;
-        imagemItem.innerHTML = `
+        // Adiciona as imagens atuais à lista
+        data.forEach((imagem) => {
+          const imagemItem = document.createElement("li");
+          imagemItem.id = `imagem-${imagem.id}`;
+          imagemItem.innerHTML = `
           <img src="${imagem.foto}" alt="Imagem">
           <button class="btn btn-danger" onclick="excluirImagem(${idImovel}, ${imagem.id})">Excluir</button>
         `;
-        imagensAtuais.appendChild(imagemItem);
+          imagensAtuais.appendChild(imagemItem);
+        });
+      })
+      .catch((error) => {
+        console.error(error);
       });
-    })
-    .catch((error) => {
-      console.error(error);
-    });
-}
-
+  }
 </script>
 
 {% endblock %}

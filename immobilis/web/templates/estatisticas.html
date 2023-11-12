@@ -1,0 +1,328 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Visualização de Mensagens - Imobiliária
+{% endblock %}
+
+{% block content %}
+<!-- Estatísticas e relatórios -->
+<div class="container-fluid pt-5">
+  <div class="row justify-content-center">
+      <div class="col-md-10">
+          <h2 class="text-center mb-4">Estatísticas e Relatórios</h2>
+
+          <!-- Estatísticas gerais -->
+          <div class="row mb-4">
+              <div class="col-lg-4 col-md-6">
+                  <!-- Imóveis cadastrados -->
+                  <div class="card h-100">
+                      <div class="card-body d-flex flex-column">
+                          <h5 class="card-title">Imóveis cadastrados</h5>
+                          <p class="card-text">Número total de imóveis cadastrados na plataforma.</p>
+                          <h3 class="text-center" id="totalImoveis">Carregando...</h3>
+                      </div>
+                  </div>
+              </div>
+
+              <div class="col-lg-4 col-md-6">
+                  <!-- Acessos -->
+                  <div class="card h-100">
+                      <div class="card-body d-flex flex-column">
+                          <h5 class="card-title">Acessos</h5>
+                          <p class="card-text">Quantidade de acessos à plataforma nos últimos 30 dias.</p>
+                          <h3 class="text-center" id="totalAcessos">Carregando...</h3>
+                      </div>
+                  </div>
+              </div>
+
+              <div class="col-lg-4 col-md-6">
+                  <!-- Imóveis mais visualizados -->
+                  <div class="card h-100">
+                      <div class="card-body d-flex flex-column">
+                          <h5 class="card-title">Imóveis mais visualizados</h5>
+                          <p class="card-text">Top 5 imóveis mais visualizados nos últimos 30 dias.</p>
+                          <ul class="list-group list-group-flush" id="imoveisMaisVisualizados">
+                              <h3 class="text-center">Carregando...</h3>
+                          </ul>
+                      </div>
+                  </div>
+              </div>
+          </div>
+
+          <!-- Gráficos -->
+          <div class="row">
+              <div class="col-lg-6 col-md-12 mb-4">
+                  <!-- Novos usuários -->
+                  <div class="card h-100">
+                      <div class="card-body d-flex flex-column">
+                          <h5 class="card-title">Novos usuários</h5>
+                          <p class="card-text">Número de novos usuários cadastrados nos últimos 6 meses.</p>
+                          <canvas id="lineChart"></canvas>
+                      </div>
+                  </div>
+              </div>
+
+              <div class="col-lg-6 col-md-12 mb-4">
+                  <!-- Tipos de imóveis cadastrados -->
+                  <div class="card h-100">
+                      <div class="card-body d-flex flex-column">
+                          <h5 class="card-title">Tipos de imóveis cadastrados</h5>
+                          <p class="card-text">Distribuição percentual dos tipos de imóveis cadastrados.</p>
+                          <canvas id="barChart"></canvas>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+
+<script>
+  // Função para carregar o número de imóveis cadastrados via fetch
+  function carregarNumeroImoveis() {
+      fetch(`${baseURL}imoveis`, {
+          method: 'GET',
+          headers: {
+              'Authorization': 'Bearer SEU_TOKEN_AQUI' // Substitua pelo seu token de autenticação
+          }
+      })
+      .then(response => response.json())
+      .then(imoveis => {
+          const totalImoveisElement = document.getElementById('totalImoveis');
+          totalImoveisElement.textContent = imoveis.length;
+      })
+      .catch(error => {
+          console.error('Erro ao carregar o número de imóveis:', error);
+      });
+  }
+
+  // Chame a função para carregar o número de imóveis quando a página carregar
+  window.addEventListener('load', carregarNumeroImoveis);
+
+  // Função para carregar o número de acessos nos últimos 30 dias via fetch
+function carregarNumeroAcessos() {
+    const trintaDiasAtras = new Date();
+    trintaDiasAtras.setDate(trintaDiasAtras.getDate() - 30);
+
+    fetch(`${baseURL}acessos/`, {
+        method: 'GET',
+        headers: {
+            'Authorization': 'Bearer SEU_TOKEN_AQUI' // Substitua pelo seu token de autenticação
+        }
+    })
+    .then(response => response.json())
+    .then(acessos => {
+        // Filtrar os acessos nos últimos 30 dias
+        const acessosNosUltimos30Dias = acessos.filter(acesso => new Date(acesso.data_acesso) >= trintaDiasAtras);
+        
+        const totalAcessosElement = document.getElementById('totalAcessos');
+        totalAcessosElement.textContent = acessosNosUltimos30Dias.length;
+    })
+    .catch(error => {
+        console.error('Erro ao carregar o número de acessos:', error);
+    });
+}
+
+// Chame a função para carregar o número de acessos quando a página carregar
+window.addEventListener('load', carregarNumeroAcessos);
+// Função para carregar os imóveis mais visualizados nos últimos 30 dias via fetch
+function carregarImoveisMaisVisualizados() {
+    const trintaDiasAtras = new Date();
+    trintaDiasAtras.setDate(trintaDiasAtras.getDate() - 30);
+
+    fetch(`${baseURL}acessos/`, {
+        method: 'GET',
+        headers: {
+            'Authorization': 'Bearer SEU_TOKEN_AQUI' // Substitua pelo seu token de autenticação
+        }
+    })
+    .then(response => response.json())
+    .then(acessos => {
+        // Filtrar os acessos do caminho /detalhesimovel?imovelId=XXXX
+        const acessosDetalhesImovel = acessos.filter(acesso => {
+            const caminho = new URL(acesso.caminho, baseURL);
+            return caminho.pathname === '/detalhesimovel/' && caminho.searchParams.has('imovelId');
+        });
+
+        // Organizar os acessos por imóvelID e contar as visualizações
+        const imoveisVisualizados = {};
+        acessosDetalhesImovel.forEach(acesso => {
+            const caminho = new URL(acesso.caminho, baseURL);
+            const imovelID = caminho.searchParams.get('imovelId');
+            imoveisVisualizados[imovelID] = (imoveisVisualizados[imovelID] || 0) + 1;
+        });
+
+        // Ordenar os imóveis por visualizações (do maior para o menor)
+        const imoveisOrdenados = Object.keys(imoveisVisualizados).sort((a, b) => {
+            return imoveisVisualizados[b] - imoveisVisualizados[a];
+        });
+
+        // Exibir os top 5 imóveis mais visualizados
+        const imoveisMaisVisualizadosElement = document.getElementById('imoveisMaisVisualizados');
+        imoveisMaisVisualizadosElement.innerHTML = ''; // Limpa a lista antes de adicionar os dados
+
+        imoveisOrdenados.slice(0, 5).forEach(imovelID => {
+            const li = document.createElement('li');
+            li.classList.add('list-group-item');
+            li.textContent = `Cód: ${imovelID} - ${imoveisVisualizados[imovelID]} visualizações`;
+            imoveisMaisVisualizadosElement.appendChild(li);
+        });
+    })
+    .catch(error => {
+        console.error('Erro ao carregar os imóveis mais visualizados:', error);
+    });
+}
+
+// Chame a função para carregar os imóveis mais visualizados quando a página carregar
+window.addEventListener('load', carregarImoveisMaisVisualizados);
+ // Função para carregar a lista de usuários e contar novos usuários nos últimos 6 meses
+ function carregarListaUsuarios() {
+    fetch(`${baseURL}usuarios`, {
+      method: 'GET',
+      headers: {
+        'Authorization': 'Bearer SEU_TOKEN_AQUI' // Substitua pelo seu token de autenticação
+      }
+    })
+      .then(response => response.json())
+      .then(usuarios => {
+        // Filtrar os usuários que foram cadastrados nos últimos 6 meses
+        const dataLimite = new Date();
+        dataLimite.setMonth(dataLimite.getMonth() - 6);
+
+        const novosUsuariosPorMes = [];
+        for (let i = 0; i < 6; i++) {
+          const mesAtual = new Date(dataLimite);
+          mesAtual.setMonth(mesAtual.getMonth() + i);
+
+          const novosUsuariosNoMes = usuarios.filter(usuario => {
+            const dataCadastro = new Date(usuario.data_cadastro);
+            return (
+              dataCadastro >= mesAtual &&
+              dataCadastro < new Date(mesAtual).setMonth(mesAtual.getMonth() + 1)
+            );
+          });
+
+          novosUsuariosPorMes.push(novosUsuariosNoMes.length);
+        }
+
+// Array de objetos Date representando os últimos 6 meses
+const last6Months = Array.from({ length: 6 }, (_, i) => {
+  const currentDate = new Date();
+  currentDate.setMonth(currentDate.getMonth() - i);
+  return currentDate;
+});
+
+// Array de nomes dos meses correspondentes
+const monthNames = last6Months.map((date) => {
+  const options = { month: 'long' }; // Obtém o nome completo do mês
+  return new Intl.DateTimeFormat('pt-BR', options).format(date);
+});
+
+new Chart(lineChart, {
+  type: 'line',
+  data: {
+    labels: monthNames.reverse(), // Inverte a ordem para exibir do mês mais antigo ao mais recente
+    datasets: [
+      {
+        label: 'Novos usuários nos últimos 6 meses',
+        data: novosUsuariosPorMes,
+        borderColor: 'rgba(75, 192, 192, 1)',
+        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+        borderWidth: 1,
+        fill: true,
+      },
+    ],
+  },
+  options: {
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: {
+          stepSize: 1,
+        },
+      },
+    },
+  },
+});
+      })
+      .catch(error => {
+        console.error('Erro ao carregar a lista de usuários:', error);
+      });
+  }
+
+  // Chame a função para carregar a lista de usuários e atualizar o gráfico quando a página carregar
+  window.addEventListener('load', carregarListaUsuarios);
+
+// Função para carregar a lista de imóveis e calcular a distribuição percentual
+function carregarTiposImoveis() {
+    fetch(`${baseURL}imoveis`, {
+        method: 'GET',
+        headers: {
+            'Authorization': 'Bearer SEU_TOKEN_AQUI' // Substitua pelo seu token de autenticação
+        }
+    })
+    .then(response => response.json())
+    .then(imoveis => {
+        // Contar quantos imóveis de cada tipo existem
+        let casas = 0;
+        let apartamentos = 0;
+
+        imoveis.forEach(imovel => {
+            if (imovel.id_tipo === 1) {
+                casas++;
+            } else if (imovel.id_tipo === 2) {
+                apartamentos++;
+            }
+        });
+
+        // Calcular a distribuição percentual
+        const totalImoveis = casas + apartamentos;
+        const percentualCasas = (casas / totalImoveis) * 100;
+        const percentualApartamentos = (apartamentos / totalImoveis) * 100;
+
+        // Atualizar o gráfico de barras
+        const barChart = document.getElementById('barChart').getContext('2d');
+        new Chart(barChart, {
+            type: 'bar',
+            data: {
+                labels: ['Casa', 'Apartamento'],
+                datasets: [{
+                    label: 'Tipos de imóveis',
+                    data: [percentualCasas, percentualApartamentos],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.8)',
+                        'rgba(54, 162, 235, 0.8)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return value + '%';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    })
+    .catch(error => {
+        console.error('Erro ao carregar a lista de imóveis:', error);
+    });
+}
+
+// Chame a função para carregar a distribuição de tipos de imóveis quando a página carregar
+window.addEventListener('load', carregarTiposImoveis);
+
+</script>
+
+{% endblock %}
