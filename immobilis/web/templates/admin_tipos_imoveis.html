@@ -132,7 +132,7 @@
         nome,
       };
       
-      fetch(baseURL+'admin/tipos-imoveis', {
+      fetch(baseURL+'imoveis/tipos-imoveis', {
           method: 'POST',
           body: JSON.stringify(addtiposImovel),
           headers: {
@@ -159,7 +159,7 @@
       nome,
     };
 
-    fetch(baseURL+`admin/tipos-imoveis/${id}`, {
+    fetch(baseURL+`imoveis/tipos-imoveis/${id}`, {
       method: 'PUT',
       body: JSON.stringify(updatedtiposImovel),
       headers: {
@@ -181,7 +181,7 @@
       const formData = new FormData(form);
       const id = formData.get('id');
 
-      fetch(baseURL+`admin/tipos-imoveis/${id}`, {
+      fetch(baseURL+`imoveis/tipos-imoveis/${id}`, {
           method: 'DELETE',
           headers: {
               'Authorization': `Bearer ${jwtToken}`,
@@ -204,7 +204,7 @@
           //const searchTerm = searchForm.querySelector('input[type="search"]').value;
       
           //fetch(`http://localhost:5000/api/v1/tiposImovel?search=${encodeURIComponent(searchTerm)}`, {
-          fetch(baseURL+'admin/tipos-imoveis', {
+          fetch(baseURL+'imoveis/tipos-imoveis', {
           headers: {
               'Authorization': `Bearer ${jwtToken}`,
               'Content-Type': 'application/json',
