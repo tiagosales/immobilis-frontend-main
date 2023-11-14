@@ -214,7 +214,7 @@
     const descricao = form.querySelector('#descricaoPerfilEdit').value;
     const telasSelect = form.querySelector('#telasPerfilEdit');
     const telas = Array.from(telasSelect.selectedOptions).map(option => parseInt(option.value));
-
+    telas.sort((a, b) => a - b);
     const updatedPerfil = {
       nome,
       descricao,
@@ -322,17 +322,19 @@
     var nome = button.data('nome');
     var descricao = button.data('descricao');
     //var telas = button.data('telas-id');
-    var telas = button.data('telas-id').toString().split(',');
+    var telas = button.data('telas-id');
     var modal = $(this);
     modal.find('input[name="id"]').val(id);
     modal.find('#nomePerfilEdit').val(nome);
     modal.find('#descricaoPerfilEdit').val(descricao);
 
     const telasSelect = modal.find('#telasPerfilEdit');
-    telasSelect.val(telas);
-    telas.forEach(tela => {
-        telasSelect.find(`option[value="${tela}"]`).prop('selected', true);
-    });
+    var telasArray = telas.replace(/[{}]/g, '').split(',').map(Number);
+    telasSelect.val(telasArray);
+    console.log(telasArray);
+    telasArray.forEach(tela => {
+    telasSelect.find(`option[value="${tela}"]`).prop('selected', true);
+});
   });
 
   $('#excluirPerfilModal').on('show.bs.modal', function (event) {
