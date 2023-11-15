@@ -566,7 +566,7 @@
 
   async function fetchTiposImoveis() {
     return new Promise((resolve, reject) => {
-      $.get(baseURL + "admin/tipos-imoveis", (data) => {
+      $.get(baseURL + "imoveis/tipos-imoveis", (data) => {
         resolve(data);
       }).fail((error) => {
         console.error("Erro ao carregar tipos:", error);
@@ -630,7 +630,7 @@
 
   async function fetchTiposImoveis() {
   return new Promise((resolve, reject) => {
-    $.get(baseURL + "admin/tipos-imoveis", (data) => {
+    $.get(baseURL + "imoveis/tipos-imoveis", (data) => {
       resolve(data);
     }).fail((error) => {
       console.error("Erro ao carregar tipos de imóveis:", error);
