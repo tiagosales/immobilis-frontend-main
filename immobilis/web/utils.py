@@ -6,6 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import redirect
 from google.oauth2 import id_token
 from google.auth.transport import requests as grequests
+from immobilis.settings import URL_BACKEND
 import traceback
 
 def user_id(request):
@@ -30,9 +31,9 @@ def login_process(request):
 
         # Realizar a autenticação através da API Flask
         headers = {'Accept': 'application/json','Content-Type': 'application/json'}
-        responselogin = requests.post('http://127.0.0.1:5000/api/v1/auth/login', data=json.dumps({'email': email, 'senha': senha}),headers=headers)
+        responselogin = requests.post(URL_BACKEND+'/api/v1/auth/login', data=json.dumps({'email': email, 'senha': senha}),headers=headers)
 
-        if responselogin.status_code == 200:
+        if responselogin.status_code == 200 or responselogin.status_code == 201:
             data = responselogin.json()
             user_id = data.get('user_id')
             perfil_id = data.get('perfil_id')
@@ -50,8 +51,8 @@ def login_process(request):
     session.create()
     
     # Definir o cookie de sessão no navegador
-    #response = JsonResponse({'message': 'Login realizado com sucesso!'})
-    response = redirect('/busca/')
+    response = JsonResponse({'message': 'Login realizado com sucesso!'},status=responselogin.status_code)
+    #response = redirect('/busca/')
     response.set_cookie(key='sessionid', value=session.session_key, httponly=True)
     return response
 
@@ -76,7 +77,7 @@ def logout(request):
             session.delete()
         except Session.DoesNotExist:
             pass
-    response = redirect('http://localhost:5000/logout')
+    response = redirect(URL_BACKEND+'/logout')
     response.delete_cookie('sessionid')
     return response
 

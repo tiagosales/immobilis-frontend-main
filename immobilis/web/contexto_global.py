@@ -1,9 +1,10 @@
 from .utils import is_user_logged_in
+from immobilis.settings import URL_BACKEND
 
 def variaveis_globais(request):
     return {
-        'api_url': 'http://localhost:5000',
-        'base_url': 'http://localhost:5000/api/v1/',
+        'api_url': URL_BACKEND,
+        'base_url': URL_BACKEND+'/api/v1/',
     }
 
 def user_id(request):

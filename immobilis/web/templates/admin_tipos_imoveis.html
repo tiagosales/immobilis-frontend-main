@@ -203,7 +203,6 @@
           //const searchForm = document.querySelector('form input[type="search"]').form;
           //const searchTerm = searchForm.querySelector('input[type="search"]').value;
       
-          //fetch(`http://localhost:5000/api/v1/tiposImovel?search=${encodeURIComponent(searchTerm)}`, {
           fetch(baseURL+'imoveis/tipos-imoveis', {
           headers: {
               'Authorization': `Bearer ${jwtToken}`,

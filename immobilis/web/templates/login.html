@@ -26,12 +26,12 @@
             <input type="checkbox" class="form-check-input" id="lembrar">
             <label class="form-check-label" for="lembrar">Lembrar-me</label>
           </div-->
-          <button type="submit" class="btn btn-primary btn-block">Entrar</button>
+          <button type="submit" class="btn btn-primary btn-block">Entrar ou Registrar</button>
         </form>
         <hr>
         <p class="text-center">ou</p>
         <div class="form-group">
-          <a  class="btn btn-primary btn-block" href="{{ api_url }}/authorize/google">Entrar com o Google</a>
+          <a  class="btn btn-primary btn-block" href="{{ api_url }}/authorize/google">Entrar ou Registrar com o Google</a>
         </div>
         <!--div class="text-center">
           <a href="#">Esqueceu a senha?</a>
@@ -72,6 +72,7 @@ $("#login-form").submit(function (event) {
     },
     success: function (response) {
       // Redirecionar para a página desejada após o login bem-sucedido
+      if (response.status === 201)  alert('Usuário não existia e foi registrado!');
       window.location.href = "/busca/";
     },
     error: function (error) {
