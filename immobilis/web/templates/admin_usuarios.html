@@ -110,6 +110,10 @@
                       <input type="text" class="form-control" id="nomeUsuarioEdit">
                   </div>
                   <div class="form-group">
+                    <label for="senhaUsuarioEdit" class="col-form-label">Senha:</label>
+                    <input type="password" class="form-control" id="senhaUsuarioEdit">
+                  </div>
+                  <div class="form-group">
                       <label for="emailUsuarioEdit" class="col-form-label">Email:</label>
                       <input type="email" class="form-control" id="emailUsuarioEdit">
                   </div>
@@ -224,12 +228,14 @@
     const idField = form.querySelector('input[name="id"]');
     const id = idField.value;
     const nome = form.querySelector('#nomeUsuarioEdit').value;
+    const senha = form.querySelector('#senhaUsuarioEdit').value;
     const email = form.querySelector('#emailUsuarioEdit').value;
     const perfil = form.querySelector('#perfilUsuarioEdit').value;
 
     const updatedUser = {
         nome,
         email,
+        senha,
         id_perfil: parseInt(perfil),
     };
 
@@ -275,10 +281,6 @@
               event.preventDefault();
           }
           await carregarPerfis();
-          //const searchForm = document.querySelector('form input[type="search"]').form;
-          //const searchTerm = searchForm.querySelector('input[type="search"]').value;
-      
-          //fetch(`http://localhost:5000/api/v1/usuarios?search=${encodeURIComponent(searchTerm)}`, {
           fetch(baseURL+'usuarios', {
           headers: {
               'Authorization': `Bearer ${jwtToken}`,

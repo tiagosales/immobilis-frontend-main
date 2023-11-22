@@ -84,7 +84,7 @@
       fetch(`${baseURL}imoveis`, {
           method: 'GET',
           headers: {
-              'Authorization': 'Bearer SEU_TOKEN_AQUI' // Substitua pelo seu token de autenticação
+              'Authorization': 'Bearer {{ access_token }}' // Substitua pelo seu token de autenticação
           }
       })
       .then(response => response.json())
@@ -108,7 +108,7 @@ function carregarNumeroAcessos() {
     fetch(`${baseURL}acessos/`, {
         method: 'GET',
         headers: {
-            'Authorization': 'Bearer SEU_TOKEN_AQUI' // Substitua pelo seu token de autenticação
+            'Authorization': 'Bearer {{ access_token }}' // Substitua pelo seu token de autenticação
         }
     })
     .then(response => response.json())
@@ -134,7 +134,7 @@ function carregarImoveisMaisVisualizados() {
     fetch(`${baseURL}acessos/`, {
         method: 'GET',
         headers: {
-            'Authorization': 'Bearer SEU_TOKEN_AQUI' // Substitua pelo seu token de autenticação
+            'Authorization': 'Bearer {{ access_token }}' 
         }
     })
     .then(response => response.json())
@@ -181,7 +181,7 @@ window.addEventListener('load', carregarImoveisMaisVisualizados);
     fetch(`${baseURL}usuarios`, {
       method: 'GET',
       headers: {
-        'Authorization': 'Bearer SEU_TOKEN_AQUI' // Substitua pelo seu token de autenticação
+        'Authorization': 'Bearer {{ access_token }}' // Substitua pelo seu token de autenticação
       }
     })
       .then(response => response.json())
@@ -259,7 +259,7 @@ function carregarTiposImoveis() {
     fetch(`${baseURL}imoveis`, {
         method: 'GET',
         headers: {
-            'Authorization': 'Bearer SEU_TOKEN_AQUI' // Substitua pelo seu token de autenticação
+            'Authorization': 'Bearer {{ access_token }}' // Substitua pelo seu token de autenticação
         }
     })
     .then(response => response.json())

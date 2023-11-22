@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .utils import is_user_logged_in, login_post, logout
+from .utils import is_user_logged_in, login_process, logout
 from django.http import JsonResponse
 import requests
 

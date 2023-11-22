@@ -2,6 +2,7 @@ from .utils import is_user_logged_in
 
 def variaveis_globais(request):
     return {
+        'api_url': 'http://localhost:5000',
         'base_url': 'http://localhost:5000/api/v1/',
     }
 

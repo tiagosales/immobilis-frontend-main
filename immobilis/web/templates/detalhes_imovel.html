@@ -52,7 +52,14 @@
           <div class="stars" id="avaliacoes">
           </div>
           <div class="heart">
+            {% load cache %}
+            {% cache 0 my_cache_key %}
+            {% if user_id != 0 %}
             <button type="button" class="btn btn-outline-danger" id="favoritoButton"><i class="far fa-heart"></i> Adicionar aos Favoritos</button>
+            {% else %}
+            <button type="button" title="Realize o login para adicionar como favorito!" class="btn btn-outline-danger" id="favoritoButton" disabled><i class="far fa-heart"></i> Adicionar aos Favoritos</button>
+            {% endif %}
+            {% endcache %}
           </div>
       </div>
       
@@ -381,7 +388,7 @@ window.addEventListener('DOMContentLoaded', async () => {
 
   // Função para verificar se o imóvel já está nos favoritos
   function verificarSeImovelEhFavorito(codigoImovel) {
-    return fetch(`${baseURL}usuarios/{{ user_id }}/favoritos`)
+    return fetch(`${baseURL}usuarios/{{ user_id }}/favoritos`, { headers: {"Authorization": "Bearer {{ access_token }}"} })
       .then((response) => {
         if (response.status === 200) {
           return response.json();
@@ -426,6 +433,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     fetch(`${baseURL}usuarios/{{ user_id }}/favoritos`, {
       method: "POST",
       headers: {
+        "Authorization": "Bearer {{ access_token }}",
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
@@ -453,6 +461,9 @@ window.addEventListener('DOMContentLoaded', async () => {
 
     fetch(`${baseURL}usuarios/{{ user_id }}/favoritos/${codigoImovel}`, {
       method: "DELETE",
+      headers: {
+        "Authorization": "Bearer {{ access_token }}",
+      },
     })
       .then((response) => {
         if (response.status === 204) {

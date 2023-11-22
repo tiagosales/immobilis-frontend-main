@@ -40,7 +40,7 @@
     fetch(`${baseURL}mensagens/{{ user_id }}`, {
       method: 'GET',
       headers: {
-        'Authorization': 'Bearer SEU_TOKEN_AQUI' // Substitua pelo seu token de autenticação
+        'Authorization': 'Bearer {{ access_token }}' 
       }
     })
     .then(response => response.json())
