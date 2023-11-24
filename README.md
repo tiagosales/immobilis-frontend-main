@@ -11,4 +11,4 @@ Projeto integrado da pós graduação de Desenv. Web Full Stack da PUC Minas<br>
   6. Instale os pacotes requeridos:<br>
      (venv)$ pip install -r requirements.txt<br>
   7. Iniciar o Django:<br>
-     (venv)$ python3 manage.py runserver<br>
+     (venv)$ cd immobilis; python3 manage.py runserver<br>
