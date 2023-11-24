@@ -16,12 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from django.shortcuts import redirect
 
-#urlpatterns = [
-#    path('admin/', admin.site.urls),
-#    path('', include('web.urls')),
-#]
 urlpatterns = [
-    path('', lambda req: redirect('/busca/'))
+    path('', include('web.urls')),
 ]
