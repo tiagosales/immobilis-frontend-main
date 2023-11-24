@@ -51,7 +51,7 @@ def login_process(request):
     session.create()
     
     # Definir o cookie de sessão no navegador
-    response = JsonResponse({'message': 'Login realizado com sucesso!'},status=responselogin.status_code)
+    response = JsonResponse({'message': 'Login realizado com sucesso!'},status=200)
     #response = redirect('/busca/')
     response.set_cookie(key='sessionid', value=session.session_key, httponly=True)
     return response
