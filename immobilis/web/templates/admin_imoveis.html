@@ -954,9 +954,6 @@
       },
     }).then((response) => {
       if (response.status === 201) {
-        // A imagem foi adicionada com sucesso, você pode atualizar a lista de imagens atuais aqui.
-        // Lembre-se de adicionar a nova imagem à lista "imagensAtuais".
-        // Exemplo:
         const imagensAtuais = document.querySelector("#imagensAtuais");
         const novaImagemItem = document.createElement("li");
         novaImagemItem.textContent = novaImagem;
